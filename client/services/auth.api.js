@@ -1,7 +1,9 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://mockmate-backend.vercel.app/api/auth",
+  baseURL: process.env.NEXT_PUBLIC_API_URL
+    ? `${process.env.NEXT_PUBLIC_API_URL}/api/auth`
+    : "https://mockmate-backend-blue.vercel.app/api/auth",
   withCredentials: true,
 });
 
