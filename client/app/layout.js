@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 export const metadata = {
-  title: "AI ATS Platform - Custom Interview Plan",
+  title: "MockMate.AI - Custom Interview Plan",
   description: "AI-Powered Strategy Generation & Resume Analyzer",
   icons: {
     icon: "/favicon.svg",

@@ -24,7 +24,7 @@ export default function Navbar() {
                         <polyline points="2 17 12 22 22 17" />
                         <polyline points="2 12 12 17 22 12" />
                     </svg>
-                    <span className="logo-text">AI ATS <span className="highlight">Strategy</span></span>
+                    <span className="logo-text">MockMate<span className="highlight">AI</span></span>
                 </Link>
 
                 {/* Navigation Actions */}

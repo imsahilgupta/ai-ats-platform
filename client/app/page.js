@@ -42,7 +42,7 @@ const LandingPage = () => {
                             <span className="preview-dot red"></span>
                             <span className="preview-dot yellow"></span>
                             <span className="preview-dot green"></span>
-                            <span className="preview-title">AI ATS Report - Senior React Developer</span>
+                            <span className="preview-title">MockMate.AI Report - Senior React Developer</span>
                         </div>
                         <div className="preview-body">
                             <div className="preview-sidebar">

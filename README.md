@@ -1,4 +1,4 @@
-# 🎯 AI ATS Platform
+# 🎯 MockMate.AI
 
 > An AI-powered interview strategy and resume optimization platform that analyzes your profile against any job description, identifies skill gaps, generates custom technical & behavioral questions, and builds you a day-by-day preparation roadmap.
 

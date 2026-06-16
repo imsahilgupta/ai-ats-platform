@@ -12,7 +12,7 @@ export default function Footer() {
             <div className="footer-container">
                 <div className="footer-brand">
                     <p className="footer-copyright">
-                        &copy; {new Date().getFullYear()} AI ATS Platform. All rights reserved.
+                        &copy; {new Date().getFullYear()} MockMate.AI. All rights reserved.
                     </p>
                 </div>
                 
