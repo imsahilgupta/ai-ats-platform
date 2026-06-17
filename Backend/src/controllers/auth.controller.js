@@ -77,7 +77,7 @@ async function registerUserController(req, res) {
     });
 
     const token = jwt.sign(
-      { id: user._id, username: user.username },
+      { id: user._id, username: user.username, isAdmin: user.isAdmin },
       process.env.JWT_SECRET,
       { expiresIn: "1d" },
     );
@@ -90,6 +90,7 @@ async function registerUserController(req, res) {
         id: user._id,
         username: user.username,
         email: user.email,
+        isAdmin: user.isAdmin,
       },
     });
   } catch (err) {
@@ -133,7 +134,7 @@ async function loginUserController(req, res) {
     }
 
     const token = jwt.sign(
-      { id: user._id, username: user.username },
+      { id: user._id, username: user.username, isAdmin: user.isAdmin },
       process.env.JWT_SECRET,
       { expiresIn: "1d" },
     );
@@ -146,6 +147,7 @@ async function loginUserController(req, res) {
         id: user._id,
         username: user.username,
         email: user.email,
+        isAdmin: user.isAdmin,
       },
     });
   } catch (err) {
@@ -213,6 +215,7 @@ async function getMeController(req, res) {
         id: user._id,
         username: user.username,
         email: user.email,
+        isAdmin: user.isAdmin,
       },
     });
   } catch (err) {
@@ -253,14 +256,14 @@ async function updateUsernameController(req, res) {
     }
     // Re-issue JWT with updated username
     const token = jwt.sign(
-      { id: user._id, username: user.username },
+      { id: user._id, username: user.username, isAdmin: user.isAdmin },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
     res.cookie("token", token, getCookieOptions());
     res.status(200).json({
       message: "Username updated successfully",
-      user: { id: user._id, username: user.username, email: user.email },
+      user: { id: user._id, username: user.username, email: user.email, isAdmin: user.isAdmin },
     });
   } catch (err) {
     console.error("Update username error:", err);

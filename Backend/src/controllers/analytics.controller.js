@@ -90,6 +90,39 @@ async function getAnalyticsController(req, res) {
     }
 }
 
+
+/**
+ * Admin-only: platform-wide system stats
+ */
+async function getAdminStatsController(req, res) {
+    try {
+        const userModel = require("../models/user.model");
+        const subscriptionModel = require("../models/subscription.model");
+
+        const [totalUsers, totalSessions, totalResumes, totalJobs, proSubs] =
+            await Promise.all([
+                userModel.countDocuments(),
+                mockInterviewSessionModel.countDocuments(),
+                resumeReportModel.countDocuments(),
+                jobApplicationModel.countDocuments(),
+                subscriptionModel.countDocuments({ plan: { $ne: "FREE" }, isActive: true }),
+            ]);
+
+        res.status(200).json({
+            totalUsers,
+            totalSessions,
+            totalResumes,
+            totalJobs,
+            activeSubscribers: proSubs,
+            monthlyRecurringRevenue: proSubs * 15, // $15/month per PRO seat (mock)
+        });
+    } catch (error) {
+        console.error("Admin stats error:", error);
+        res.status(500).json({ message: "Failed to compile admin stats.", error: error.message });
+    }
+}
+
 module.exports = {
-    getAnalyticsController
+    getAnalyticsController,
+    getAdminStatsController,
 };

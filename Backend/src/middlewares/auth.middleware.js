@@ -24,4 +24,15 @@ async function authUser(req, res, next) {
   }
 }
 
-module.exports = { authUser };
+/**
+ * @name adminOnly
+ * @desc Middleware that must run AFTER authUser. Rejects requests from non-admin users.
+ */
+function adminOnly(req, res, next) {
+  if (!req.user || !req.user.isAdmin) {
+    return res.status(403).json({ message: "Access denied. Admins only." });
+  }
+  next();
+}
+
+module.exports = { authUser, adminOnly };
