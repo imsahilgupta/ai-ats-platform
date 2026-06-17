@@ -8,15 +8,15 @@ import Link from 'next/link';
 
 // ── Landing Page Sub-Component ──
 const LandingPage = () => {
-    const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
-    const [submitted, setSubmitted] = useState(false);
+    const [newsletterEmail, setNewsletterEmail] = useState('');
+    const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
 
-    const handleContactSubmit = (e) => {
+    const handleNewsletterSubmit = (e) => {
         e.preventDefault();
-        setSubmitted(true);
+        setNewsletterSubmitted(true);
         setTimeout(() => {
-            setSubmitted(false);
-            setContactForm({ name: '', email: '', message: '' });
+            setNewsletterSubmitted(false);
+            setNewsletterEmail('');
         }, 3000);
     };
 
@@ -110,93 +110,36 @@ const LandingPage = () => {
                 </div>
             </section>
 
-            {/* About Section */}
-            <section className="about-section">
-                <div className="about-grid">
-                    <div className="about-content">
-                        <span className="section-tag">About System</span>
-                        <h2 className="section-title">Designed for Job Seekers & Career Changers</h2>
-                        <p className="about-desc">
-                            The AI ATS Strategy Platform bridges the gap between candidates and rigid applicant tracking systems. Instead of guessing why you aren't getting callbacks, our AI runs deep analyses of skills, keyword frequencies, and role intentions to prepare you for interviews.
+            {/* Newsletter Section */}
+            <section className="newsletter-section">
+                <div className="newsletter-container">
+                    <div className="newsletter-content">
+                        <span className="section-tag">Newsletter</span>
+                        <h2 className="section-title">Stay Ahead of the Curve</h2>
+                        <p className="newsletter-desc">
+                            Subscribe to our newsletter to receive the latest interview strategies, resume tailoring tips, and industry trends directly in your inbox.
                         </p>
-                        <div className="about-stats">
-                            <div className="stat-item">
-                                <span className="stat-num">30s</span>
-                                <span className="stat-label">Analysis Time</span>
-                            </div>
-                            <div className="stat-item">
-                                <span className="stat-num">100%</span>
-                                <span className="stat-label">Tailored Strategy</span>
-                            </div>
-                            <div className="stat-item">
-                                <span className="stat-num">10k+</span>
-                                <span className="stat-label">Reports Generated</span>
-                            </div>
-                        </div>
                     </div>
-                </div>
-            </section>
-
-            {/* Contact Section */}
-            <section className="contact-section">
-                <div className="contact-container">
-                    <div className="contact-info">
-                        <span className="section-tag">Contact Us</span>
-                        <h2 className="section-title">Have Questions? Reach Out!</h2>
-                        <p className="contact-desc">
-                            Want to learn more about our enterprise plans, API integrations, or have suggestions for new features? Send us a message and our support team will get back to you within 24 hours.
-                        </p>
-                        <div className="contact-details">
-                            <div className="contact-detail-item">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                                <span>support@ai-ats-strategy.com</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div className="contact-form-container">
-                        {submitted ? (
-                            <div className="contact-form-success">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3fb950" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                                <h3>Thank you!</h3>
-                                <p>Your message has been sent successfully. We will contact you soon.</p>
+                    <div className="newsletter-form-container">
+                        {newsletterSubmitted ? (
+                            <div className="newsletter-success">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#3fb950" strokeWidth="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                <h4>Thanks for subscribing!</h4>
+                                <p>You'll receive our next issue soon.</p>
                             </div>
                         ) : (
-                            <form onSubmit={handleContactSubmit} className="contact-form">
-                                <div className="input-group">
-                                    <label htmlFor="contact-name">Name</label>
-                                    <input 
-                                        type="text" 
-                                        id="contact-name" 
-                                        required 
-                                        value={contactForm.name} 
-                                        onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                                        placeholder="Your full name"
-                                    />
-                                </div>
-                                <div className="input-group">
-                                    <label htmlFor="contact-email">Email Address</label>
-                                    <input 
-                                        type="email" 
-                                        id="contact-email" 
-                                        required 
-                                        value={contactForm.email} 
-                                        onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                                        placeholder="you@example.com"
-                                    />
-                                </div>
-                                <div className="input-group">
-                                    <label htmlFor="contact-message">Message</label>
-                                    <textarea 
-                                        id="contact-message" 
-                                        required 
-                                        rows="4" 
-                                        value={contactForm.message} 
-                                        onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                                        placeholder="How can we help you?"
-                                    />
-                                </div>
-                                <button type="submit" className="button primary-button contact-submit-btn">Send Message</button>
+                            <form onSubmit={handleNewsletterSubmit} className="newsletter-form">
+                                <input 
+                                    type="email" 
+                                    required 
+                                    value={newsletterEmail} 
+                                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                                    placeholder="Enter your email address" 
+                                    className="newsletter-input"
+                                />
+                                <button type="submit" className="button primary-button newsletter-btn">
+                                    Subscribe
+                                </button>
                             </form>
                         )}
                     </div>

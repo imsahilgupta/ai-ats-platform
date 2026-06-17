@@ -31,6 +31,8 @@ export default function Navbar() {
                 <nav className="navbar-menu">
                     {user ? (
                         <div className="user-profile-section">
+                            <Link href="/about" className="login-link">About</Link>
+                            <Link href="/contact" className="login-link">Contact</Link>
                             <span className="welcome-message">
                                 Welcome, <strong className="username-text">{user.username}</strong>
                             </span>
@@ -52,6 +54,8 @@ export default function Navbar() {
                         </div>
                     ) : (
                         <div className="auth-buttons">
+                            <Link href="/about" className="login-link">About</Link>
+                            <Link href="/contact" className="login-link">Contact</Link>
                             <Link href="/login" className="login-link">Login</Link>
                             <Link href="/register" className="button primary-button register-btn">Get Started</Link>
                         </div>
