@@ -1,6 +1,6 @@
 'use client';
 
-import { getAllInterviewReports, generateInterviewReport, getInterviewReportById, generateResumePdf } from "../services/interview.api";
+import { getAllInterviewReports, generateInterviewReport, getInterviewReportById, generateResumePdf, deleteInterviewReport } from "../services/interview.api";
 import { useContext, useEffect } from "react";
 import { InterviewContext } from "../contexts/InterviewContext";
 import { useToast } from "../contexts/ToastContext";
@@ -91,6 +91,17 @@ export const useInterview = () => {
         }
     };
 
+    const deleteReport = async (reportId) => {
+        try {
+            await deleteInterviewReport(reportId);
+            setReports(prev => prev.filter(r => r._id !== reportId));
+            showToast('Report deleted successfully.', 'success');
+        } catch (error) {
+            console.log(error);
+            showToast('Failed to delete report.', 'error');
+        }
+    };
+
     useEffect(() => {
         if (interviewId) {
             getReportById(interviewId);
@@ -99,5 +110,5 @@ export const useInterview = () => {
         }
     }, [interviewId]);
 
-    return { loading, report, reports, generateReport, getReportById, getReports, getResumePdf };
+    return { loading, report, reports, generateReport, getReportById, getReports, getResumePdf, deleteReport };
 };

@@ -223,9 +223,85 @@ async function getMeController(req, res) {
   }
 }
 
+/**
+ * @name updateUsernameController
+ * @desc Update the username of the logged-in user and re-issue JWT cookie
+ * @access private
+ */
+async function updateUsernameController(req, res) {
+  try {
+    const { username } = req.body;
+    if (!username) {
+      return res.status(400).json({ message: "Username is required" });
+    }
+    if (!validateUsername(username)) {
+      return res.status(400).json({
+        message: "Username must be 3-20 characters (alphanumeric, underscore, hyphen only)",
+      });
+    }
+    const existing = await userModel.findOne({ username, _id: { $ne: req.user.id } });
+    if (existing) {
+      return res.status(400).json({ message: "Username already taken" });
+    }
+    const user = await userModel.findByIdAndUpdate(
+      req.user.id,
+      { username },
+      { new: true }
+    );
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Re-issue JWT with updated username
+    const token = jwt.sign(
+      { id: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+    res.cookie("token", token, getCookieOptions());
+    res.status(200).json({
+      message: "Username updated successfully",
+      user: { id: user._id, username: user.username, email: user.email },
+    });
+  } catch (err) {
+    console.error("Update username error:", err);
+    res.status(500).json({ message: "An error occurred while updating username" });
+  }
+}
+
+/**
+ * @name deleteAccountController
+ * @desc Delete the logged-in user account and all their interview reports
+ * @access private
+ */
+async function deleteAccountController(req, res) {
+  try {
+    const interviewReportModel = require("../models/interviewReport.model");
+    // Delete all reports belonging to the user
+    await interviewReportModel.deleteMany({ user: req.user.id });
+    // Delete the user
+    await userModel.findByIdAndDelete(req.user.id);
+    // Blacklist current token
+    const token = req.cookies.token;
+    if (token) {
+      await blacklistTokenModel.create({ token });
+    }
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+    res.status(200).json({ message: "Account deleted successfully" });
+  } catch (err) {
+    console.error("Delete account error:", err);
+    res.status(500).json({ message: "An error occurred while deleting account" });
+  }
+}
+
 module.exports = {
   registerUserController,
   loginUserController,
   logoutUserController,
   getMeController,
+  updateUsernameController,
+  deleteAccountController,
 };

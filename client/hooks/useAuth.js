@@ -3,7 +3,7 @@
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
-import { login, register, logout, getMe } from "../services/auth.api";
+import { login, register, logout, getMe, updateUsername, deleteAccount } from "../services/auth.api";
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -58,6 +58,37 @@ export const useAuth = () => {
     }
   };
 
+  const handleUpdateUsername = async (username) => {
+    setLoading(true);
+    try {
+      const data = await updateUsername({ username });
+      setUser(data.user);
+      showToast('Username updated successfully!', 'success');
+      return data.user;
+    } catch (err) {
+      console.log(err);
+      showToast('Failed to update username. It may already be taken.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setLoading(true);
+    try {
+      await deleteAccount();
+      setUser(null);
+      showToast('Your account has been deleted.', 'info');
+      return true;
+    } catch (err) {
+      console.log(err);
+      showToast('Failed to delete account. Please try again.', 'error');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const getAndSetUser = async () => {
       try {
@@ -78,5 +109,7 @@ export const useAuth = () => {
     handleLogin,
     handleRegister,
     handleLogout,
+    handleUpdateUsername,
+    handleDeleteAccount,
   };
 };

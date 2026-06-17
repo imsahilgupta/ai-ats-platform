@@ -53,3 +53,23 @@ export async function getMe() {
     throw err;
   }
 }
+
+export async function updateUsername({ username }) {
+  try {
+    const response = await api.patch("/update-username", { username });
+    return response.data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function deleteAccount() {
+  try {
+    const response = await api.delete("/delete-account");
+    return response.data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}

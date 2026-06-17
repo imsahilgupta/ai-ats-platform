@@ -14,6 +14,9 @@
 | **Skill Gap Analysis** | Highlights missing skills and their severity (high / medium / low) |
 | **Day-by-Day Roadmap** | A structured preparation plan to close your skill gaps |
 | **PDF Resume Generator** | AI-tailored, ATS-friendly resume rendered to downloadable PDF |
+| **Profile Management** | Manage account details, change username, and view/delete interview plans |
+| **Saved Inputs** | Save custom default input templates in `localStorage` to pre-fill the dashboard |
+| **Dedicated Pages** | Separate `/about` and `/contact` pages for improved navigation and SEO |
 
 ---
 
@@ -38,6 +41,9 @@ ai-ats-platform/
     │   ├── login/
     │   ├── register/
     │   ├── interview/[id]/   # Dynamic report view
+    │   ├── profile/          # User profile page (Account, Responses, Saved Inputs, Danger Zone)
+    │   ├── about/            # Dedicated About page
+    │   ├── contact/          # Dedicated Contact page (with simulated submit)
     │   ├── privacy/
     │   ├── terms/
     │   └── help/
@@ -136,8 +142,10 @@ npm run dev
 |---|---|---|
 | `POST` | `/api/auth/register` | Register a new user |
 | `POST` | `/api/auth/login` | Login |
-| `POST` | `/api/auth/logout` | Logout (blacklists token) |
-| `GET` | `/api/auth/me` | Get current user |
+| `GET` | `/api/auth/logout` | Logout (blacklists token) |
+| `GET` | `/api/auth/get-me` | Get current user details |
+| `PATCH` | `/api/auth/update-username` | Update username of current user |
+| `DELETE` | `/api/auth/delete-account` | Delete user account and all their interview reports |
 
 ### Interview Reports
 | Method | Endpoint | Description |
@@ -146,6 +154,7 @@ npm run dev
 | `GET` | `/api/interview/` | Get all reports for current user |
 | `GET` | `/api/interview/report/:id` | Get single report by ID |
 | `POST` | `/api/interview/resume/pdf/:id` | Generate & download resume PDF |
+| `DELETE` | `/api/interview/report/:id` | Delete a single report by ID |
 
 ---
 

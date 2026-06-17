@@ -37,10 +37,10 @@ export default function Navbar() {
                                 Welcome, <strong className="username-text">{user.username}</strong>
                             </span>
                             
-                            {/* User Initials Circle */}
-                            <div className="user-avatar" title={user.email}>
+                            {/* User Avatar — links to profile page */}
+                            <Link href="/profile" className="user-avatar" title="View Profile">
                                 {getInitials(user.username)}
-                            </div>
+                            </Link>
 
                             {/* Logout Button */}
                             <button onClick={handleLogout} className="logout-btn" title="Logout">

@@ -32,6 +32,18 @@ authRouter.get("/logout", authUser, authController.logoutUserController);
  */
 authRouter.get("/get-me", authUser, authController.getMeController);
 
-module.exports = authRouter;
+/**
+ * @routes PATCH /api/auth/update-username
+ * @desc Update the username of the logged-in user
+ * @access PRIVATE
+ */
+authRouter.patch("/update-username", authUser, authController.updateUsernameController);
+
+/**
+ * @routes DELETE /api/auth/delete-account
+ * @desc Delete the logged-in user account and all their data
+ * @access PRIVATE
+ */
+authRouter.delete("/delete-account", authUser, authController.deleteAccountController);
 
 module.exports = authRouter;
