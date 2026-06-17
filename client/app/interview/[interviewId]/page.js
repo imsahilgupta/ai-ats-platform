@@ -73,7 +73,8 @@ export default function Interview() {
     if (loading || !report) {
         return (
             <main className='loading-screen'>
-                <h1>Loading your interview plan...</h1>
+                <div className="spinner" />
+                <p>Loading your interview plan...</p>
             </main>
         );
     }

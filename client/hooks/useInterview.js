@@ -3,12 +3,14 @@
 import { getAllInterviewReports, generateInterviewReport, getInterviewReportById, generateResumePdf } from "../services/interview.api";
 import { useContext, useEffect } from "react";
 import { InterviewContext } from "../contexts/InterviewContext";
+import { useToast } from "../contexts/ToastContext";
 import { useParams } from "next/navigation";
 
 export const useInterview = () => {
     const context = useContext(InterviewContext);
     const params = useParams();
     const interviewId = params?.interviewId;
+    const { showToast } = useToast();
 
     if (!context) {
         throw new Error("useInterview must be used within an InterviewProvider");
@@ -23,9 +25,11 @@ export const useInterview = () => {
             response = await generateInterviewReport({ jobDescription, selfDescription, resumeFile });
             if (response && response.interviewReport) {
                 setReport(response.interviewReport);
+                showToast('Your interview plan is ready!', 'success');
             }
         } catch (error) {
             console.log(error);
+            showToast('Failed to generate report. Please try again.', 'error');
         } finally {
             setLoading(false);
         }
@@ -43,6 +47,7 @@ export const useInterview = () => {
             }
         } catch (error) {
             console.log(error);
+            showToast('Failed to load report.', 'error');
         } finally {
             setLoading(false);
         }
@@ -70,16 +75,17 @@ export const useInterview = () => {
         setLoading(true);
         try {
             const response = await generateResumePdf({ interviewReportId });
-            const url = window.URL.createObjectURL(new Blob([ response ], { type: "application/pdf" }));
+            const url = window.URL.createObjectURL(new Blob([response], { type: "application/pdf" }));
             const link = document.createElement("a");
             link.href = url;
             link.setAttribute("download", `resume_${interviewReportId}.pdf`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        }
-        catch (error) {
+            showToast('Resume downloaded successfully!', 'success');
+        } catch (error) {
             console.log(error);
+            showToast('Failed to download resume. Please try again.', 'error');
         } finally {
             setLoading(false);
         }
@@ -91,7 +97,7 @@ export const useInterview = () => {
         } else {
             getReports();
         }
-    }, [ interviewId ]);
+    }, [interviewId]);
 
     return { loading, report, reports, generateReport, getReportById, getReports, getResumePdf };
 };

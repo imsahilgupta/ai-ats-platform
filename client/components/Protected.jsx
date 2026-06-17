@@ -18,7 +18,8 @@ const Protected = ({ children }) => {
     if (loading) {
         return (
             <main className="loading-screen">
-                <h1>Loading...</h1>
+                <div className="spinner" />
+                <p>Checking authentication...</p>
             </main>
         );
     }

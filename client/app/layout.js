@@ -1,8 +1,10 @@
 import "./globals.css";
 import { AuthProvider } from "../contexts/AuthContext";
 import { InterviewProvider } from "../contexts/InterviewContext";
+import { ToastProvider } from "../contexts/ToastContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import ToastContainer from "../components/ToastContainer";
 
 export const metadata = {
   title: "MockMate.AI - Custom Interview Plan",
@@ -16,19 +18,21 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <AuthProvider>
-          <InterviewProvider>
-            <div className="app-wrapper">
-              <Navbar />
-              <div className="main-content-area">
-                {children}
+        <ToastProvider>
+          <AuthProvider>
+            <InterviewProvider>
+              <div className="app-wrapper">
+                <Navbar />
+                <div className="main-content-area">
+                  {children}
+                </div>
+                <Footer />
+                <ToastContainer />
               </div>
-              <Footer />
-            </div>
-          </InterviewProvider>
-        </AuthProvider>
+            </InterviewProvider>
+          </AuthProvider>
+        </ToastProvider>
       </body>
     </html>
   );
 }
-

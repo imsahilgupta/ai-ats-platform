@@ -3,17 +3,19 @@
 import React, { useState, useRef } from 'react';
 import { useInterview } from '../hooks/useInterview';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../contexts/ToastContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 // ── Landing Page Sub-Component ──
-const LandingPage = () => {
+const LandingPage = ({ showToast }) => {
     const [newsletterEmail, setNewsletterEmail] = useState('');
     const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
 
     const handleNewsletterSubmit = (e) => {
         e.preventDefault();
         setNewsletterSubmitted(true);
+        showToast("You're subscribed! Watch your inbox for updates.", 'success');
         setTimeout(() => {
             setNewsletterSubmitted(false);
             setNewsletterEmail('');
@@ -169,7 +171,8 @@ export default function Home() {
     if (authLoading) {
         return (
             <main className='loading-screen'>
-                <h1>Loading...</h1>
+                <div className="spinner" />
+                <p>Loading...</p>
             </main>
         );
     }
@@ -177,14 +180,17 @@ export default function Home() {
     if (interviewLoading) {
         return (
             <main className='loading-screen'>
-                <h1>Loading your interview plan...</h1>
+                <div className="spinner" />
+                <p>Generating your interview strategy...</p>
             </main>
         );
     }
 
+    const { showToast } = useToast();
+
     // Render Landing Page if User is not logged in
     if (!user) {
-        return <LandingPage />;
+        return <LandingPage showToast={showToast} />;
     }
 
     // Render Dashboard if User is logged in

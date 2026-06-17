@@ -2,14 +2,17 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useToast } from '../../contexts/ToastContext';
 
 export default function ContactPage() {
     const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
     const [submitted, setSubmitted] = useState(false);
+    const { showToast } = useToast();
 
     const handleContactSubmit = (e) => {
         e.preventDefault();
         setSubmitted(true);
+        showToast("Message sent! We'll get back to you within 24 hours.", 'success');
         setTimeout(() => {
             setSubmitted(false);
             setContactForm({ name: '', email: '', message: '' });
