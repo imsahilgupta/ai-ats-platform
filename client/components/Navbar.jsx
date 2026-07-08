@@ -6,11 +6,8 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '../hooks/useAuth';
 
 const NAV_TOOLS = [
-  { href: '/mock-interview',   icon: '🎤', label: 'Mock Interview',    desc: 'AI-powered voice interview sim' },
-  { href: '/resume-analyzer',  icon: '📄', label: 'Resume Analyzer',   desc: 'ATS score & bullet rewrites' },
-  { href: '/linkedin-analyzer',icon: '🔗', label: 'LinkedIn Optimizer',desc: 'Profile headline & bio fixes' },
-  { href: '/applications',     icon: '📋', label: 'Job Tracker',       desc: 'Kanban pipeline board' },
-  { href: '/assistant',        icon: '🤖', label: 'AI Career Coach',   desc: 'Personalized chat coach' },
+  { href: '/mock-interview', icon: '🎤', label: 'Mock Interview', desc: 'AI-powered voice interview sim' },
+  { href: '/resume-analyzer', icon: '📄', label: 'Resume Analyzer', desc: 'ATS score & bullet rewrites' },
 ];
 
 export default function Navbar() {
@@ -44,10 +41,10 @@ export default function Navbar() {
           right: 0;
           z-index: 1000;
           height: 64px;
-          background: rgba(10, 10, 14, 0.85);
+          background: rgba(250, 250, 248, 0.85);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          border-bottom: 1px solid var(--border-color);
         }
         .navbar-container {
           max-width: 1400px;
@@ -66,9 +63,9 @@ export default function Navbar() {
           text-decoration: none;
           flex-shrink: 0;
         }
-        .logo-icon { width: 24px; height: 24px; color: var(--saas-primary, #00f5a0); }
-        .logo-text { font-size: 1.15rem; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
-        .logo-text .highlight { color: var(--saas-primary, #00f5a0); }
+        .logo-icon { width: 24px; height: 24px; color: var(--accent); }
+        .logo-text { font-size: 1.15rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; font-family: var(--font-sora); }
+        .logo-text .highlight { color: var(--accent); }
 
         /* Center Nav Links */
         .navbar-center {
@@ -81,21 +78,21 @@ export default function Navbar() {
         .nav-link {
           padding: 0.45rem 0.9rem;
           border-radius: 6px;
-          color: #aaa;
+          color: var(--text-muted);
           text-decoration: none;
           font-size: 0.88rem;
           font-weight: 500;
           transition: all 0.18s;
           white-space: nowrap;
         }
-        .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
-        .nav-link.active { color: #fff; background: rgba(255,255,255,0.07); }
+        .nav-link:hover { color: var(--text-primary); background: rgba(79, 70, 229, 0.05); }
+        .nav-link.active { color: var(--accent); background: rgba(79, 70, 229, 0.08); }
 
         /* Tools dropdown trigger */
         .tools-trigger {
           padding: 0.45rem 0.9rem;
           border-radius: 6px;
-          color: #aaa;
+          color: var(--text-muted);
           font-size: 0.88rem;
           font-weight: 500;
           cursor: pointer;
@@ -107,8 +104,8 @@ export default function Navbar() {
           transition: all 0.18s;
           white-space: nowrap;
         }
-        .tools-trigger:hover { color: #fff; background: rgba(255,255,255,0.05); }
-        .tools-trigger.open { color: #fff; background: rgba(255,255,255,0.07); }
+        .tools-trigger:hover { color: var(--text-primary); background: rgba(79, 70, 229, 0.05); }
+        .tools-trigger.open { color: var(--accent); background: rgba(79, 70, 229, 0.08); }
         .tools-trigger svg { transition: transform 0.2s; }
         .tools-trigger.open svg { transform: rotate(180deg); }
 
@@ -116,15 +113,15 @@ export default function Navbar() {
         .nav-dropdown {
           position: absolute;
           top: calc(100% + 10px);
-          background: rgba(15, 15, 20, 0.97);
+          background: var(--bg-card);
           backdrop-filter: blur(24px);
           -webkit-backdrop-filter: blur(24px);
-          border: 1px solid rgba(255,255,255,0.08);
+          border: 1px solid var(--border-color);
           border-radius: 12px;
           padding: 0.5rem;
           z-index: 9999;
           animation: dropIn 0.18s ease;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+          box-shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
         @keyframes dropIn {
           from { opacity: 0; transform: translateY(-8px); }
@@ -143,8 +140,8 @@ export default function Navbar() {
           text-decoration: none;
           transition: background 0.15s;
         }
-        .tools-dropdown-item:hover { background: rgba(255,255,255,0.05); }
-        .tools-dropdown-item.active { background: rgba(0,245,160,0.06); }
+        .tools-dropdown-item:hover { background: rgba(79, 70, 229, 0.04); }
+        .tools-dropdown-item.active { background: rgba(79, 70, 229, 0.08); }
         .tools-item-icon {
           font-size: 1.3rem;
           width: 36px;
@@ -152,12 +149,12 @@ export default function Navbar() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: rgba(255,255,255,0.04);
+          background: var(--info-bg);
           border-radius: 8px;
           flex-shrink: 0;
         }
-        .tools-item-label { font-size: 0.88rem; font-weight: 600; color: #eee; }
-        .tools-item-desc { font-size: 0.75rem; color: #777; margin-top: 1px; }
+        .tools-item-label { font-size: 0.88rem; font-weight: 600; color: var(--text-primary); }
+        .tools-item-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 1px; }
 
         /* Right section */
         .navbar-right {
@@ -173,8 +170,8 @@ export default function Navbar() {
           width: 36px;
           height: 36px;
           border-radius: 50%;
-          background: linear-gradient(135deg, var(--saas-primary, #00f5a0), #00b4d8);
-          color: #000;
+          background: linear-gradient(135deg, var(--accent), var(--accent-alt));
+          color: #fff;
           font-weight: 800;
           font-size: 0.9rem;
           border: none;
@@ -185,15 +182,15 @@ export default function Navbar() {
           transition: all 0.2s;
           box-shadow: 0 0 0 2px transparent;
         }
-        .user-avatar-btn:hover { box-shadow: 0 0 0 2px var(--saas-primary, #00f5a0); transform: scale(1.05); }
+        .user-avatar-btn:hover { box-shadow: 0 0 0 2px var(--accent); transform: scale(1.05); }
         .profile-dropdown { width: 200px; right: 0; }
         .profile-username {
           padding: 0.6rem 0.85rem;
-          border-bottom: 1px solid rgba(255,255,255,0.06);
+          border-bottom: 1px solid var(--border-color);
           margin-bottom: 0.25rem;
         }
-        .profile-username strong { display: block; font-size: 0.88rem; color: #fff; }
-        .profile-username span { font-size: 0.75rem; color: #666; }
+        .profile-username strong { display: block; font-size: 0.88rem; color: var(--text-primary); }
+        .profile-username span { font-size: 0.75rem; color: var(--text-muted); }
         .profile-dropdown-link {
           display: flex;
           align-items: center;
@@ -202,7 +199,7 @@ export default function Navbar() {
           border-radius: 7px;
           text-decoration: none;
           font-size: 0.85rem;
-          color: #bbb;
+          color: var(--text-primary);
           transition: all 0.15s;
           cursor: pointer;
           border: none;
@@ -210,40 +207,40 @@ export default function Navbar() {
           width: 100%;
           text-align: left;
         }
-        .profile-dropdown-link:hover { background: rgba(255,255,255,0.05); color: #fff; }
-        .profile-dropdown-link.danger:hover { background: rgba(255,60,60,0.08); color: #ff6b6b; }
-        .profile-dropdown-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 0.25rem 0.5rem; }
+        .profile-dropdown-link:hover { background: rgba(79, 70, 229, 0.05); color: var(--accent); }
+        .profile-dropdown-link.danger:hover { background: rgba(239, 68, 68, 0.08); color: var(--severity-high); }
+        .profile-dropdown-divider { height: 1px; background: var(--border-color); margin: 0.25rem 0.5rem; }
 
         /* Auth buttons */
         .login-link {
           padding: 0.45rem 0.9rem;
           border-radius: 6px;
-          color: #aaa;
+          color: var(--text-muted);
           text-decoration: none;
           font-size: 0.88rem;
           font-weight: 500;
           transition: all 0.18s;
         }
-        .login-link:hover { color: #fff; }
+        .login-link:hover { color: var(--text-primary); }
         .register-btn {
           padding: 0.45rem 1.1rem !important;
-          background: var(--saas-primary, #00f5a0) !important;
-          color: #000 !important;
+          background: var(--accent) !important;
+          color: #fff !important;
           border-radius: 8px !important;
           font-weight: 700 !important;
           font-size: 0.88rem !important;
           text-decoration: none;
           transition: all 0.2s;
         }
-        .register-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,245,160,0.3); }
+        .register-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3); background: var(--accent-dark) !important; }
 
         /* Logout button */
         .logout-btn {
           padding: 0.45rem 0.85rem;
           background: transparent;
-          border: 1px solid rgba(255,255,255,0.1);
+          border: 1px solid var(--border-color);
           border-radius: 7px;
-          color: #888;
+          color: var(--text-muted);
           font-size: 0.85rem;
           font-weight: 500;
           cursor: pointer;
@@ -252,7 +249,7 @@ export default function Navbar() {
           gap: 0.4rem;
           transition: all 0.2s;
         }
-        .logout-btn:hover { border-color: rgba(255, 80, 80, 0.4); color: #ff6b6b; background: rgba(255,60,60,0.05); }
+        .logout-btn:hover { border-color: rgba(239, 68, 68, 0.4); color: var(--severity-high); background: rgba(239, 68, 68, 0.05); }
 
         @media (max-width: 768px) {
           .navbar-center { display: none; }
@@ -340,9 +337,6 @@ export default function Navbar() {
                       </div>
                       <Link href="/profile" className="profile-dropdown-link" onClick={() => setProfileOpen(false)}>
                         <span>👤</span> My Profile
-                      </Link>
-                      <Link href="/admin" className="profile-dropdown-link" onClick={() => setProfileOpen(false)}>
-                        <span>⚙️</span> Admin Panel
                       </Link>
                       <div className="profile-dropdown-divider" />
                       <button onClick={() => { handleLogout(); setProfileOpen(false); }} className="profile-dropdown-link danger">

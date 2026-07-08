@@ -11,17 +11,6 @@ app.use(helmet());
 const rateLimiter = require("./middlewares/rateLimiter.middleware");
 app.use(rateLimiter);
 
-// Enforce HTTPS in production
-app.use((req, res, next) => {
-  if (
-    process.env.NODE_ENV === "production" &&
-    !req.secure &&
-    req.get("x-forwarded-proto") !== "https"
-  ) {
-    return res.redirect("https://" + req.get("host") + req.url);
-  }
-  next();
-});
 
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
@@ -47,20 +36,16 @@ const authRouter = require("./routes/auth.routes");
 const interviewRouter = require("./routes/interview.routes");
 const mockInterviewRouter = require("./routes/mockInterview.routes");
 const resumeAnalysisRouter = require("./routes/resumeAnalysis.routes");
-const jobTrackerRouter = require("./routes/jobTracker.routes");
 const analyticsRouter = require("./routes/analytics.routes");
 const subscriptionRouter = require("./routes/subscription.routes");
-const assistantRouter = require("./routes/assistant.routes");
 
 /* using all routes here */
 app.use("/api/auth", authRouter);
 app.use("/api/interview", interviewRouter);
 app.use("/api/mock-interview", mockInterviewRouter);
 app.use("/api/resume", resumeAnalysisRouter);
-app.use("/api/job-applications", jobTrackerRouter);
 app.use("/api/analytics", analyticsRouter);
 app.use("/api/subscription", subscriptionRouter);
-app.use("/api/assistant", assistantRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

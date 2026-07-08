@@ -13,7 +13,7 @@ const {
  */
 const getCookieOptions = () => ({
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
+  secure: false,
   sameSite: "strict",
   maxAge: 24 * 60 * 60 * 1000, // 24 hours
 });
@@ -173,7 +173,7 @@ async function logoutUserController(req, res) {
 
     res.clearCookie("token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "strict",
     });
 
@@ -290,7 +290,7 @@ async function deleteAccountController(req, res) {
     }
     res.clearCookie("token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "strict",
     });
     res.status(200).json({ message: "Account deleted successfully" });

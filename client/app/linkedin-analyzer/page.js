@@ -61,10 +61,10 @@ export default function LinkedinAnalyzer() {
                     width: '100%',
                     minHeight: '250px',
                     padding: '1rem',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    background: 'var(--bg-input)',
+                    border: '1px solid var(--border-color)',
                     borderRadius: '8px',
-                    color: '#fff',
+                    color: 'var(--text-primary)',
                     outline: 'none',
                     fontSize: '0.95rem',
                     lineHeight: '1.5',
@@ -101,7 +101,7 @@ export default function LinkedinAnalyzer() {
             {/* Headlines Section */}
             <div className="interview-card" style={{ padding: '2rem' }}>
               <h2 style={{ fontSize: '1.3rem', marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--saas-primary)" strokeWidth="2.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5">
                   <path d="M12 2L2 7l10 5 10-5-10-5z" />
                   <path d="M2 17l10 5 10-5" />
                   <path d="M2 12l10 5 10-5" />
@@ -114,8 +114,8 @@ export default function LinkedinAnalyzer() {
                     <div
                       key={idx}
                       style={{
-                        background: 'rgba(255,255,255,0.02)',
-                        border: '1px solid rgba(255,255,255,0.06)',
+                        background: 'var(--info-bg)',
+                        border: '1px solid var(--border-color)',
                         padding: '1rem',
                         borderRadius: '8px',
                         display: 'flex',
@@ -124,15 +124,15 @@ export default function LinkedinAnalyzer() {
                         gap: '1rem'
                       }}
                     >
-                      <p style={{ color: '#fff', margin: 0, fontSize: '0.95rem', fontWeight: '500' }}>{hl}</p>
+                      <p style={{ color: 'var(--text-primary)', margin: 0, fontSize: '0.95rem', fontWeight: '500' }}>{hl}</p>
                       <button
                         onClick={() => copyToClipboard(hl)}
                         style={{
-                          background: 'rgba(255,255,255,0.05)',
-                          border: 'none',
+                          background: 'var(--bg-card)',
+                          border: '1px solid var(--border-color)',
                           borderRadius: '4px',
                           padding: '0.4rem 0.8rem',
-                          color: '#fff',
+                          color: 'var(--text-primary)',
                           cursor: 'pointer',
                           fontSize: '0.8rem',
                           flexShrink: 0
@@ -143,7 +143,7 @@ export default function LinkedinAnalyzer() {
                     </div>
                   ))
                 ) : (
-                  <p style={{ color: '#aaa', margin: 0 }}>No headline suggestions generated.</p>
+                  <p style={{ color: 'var(--text-muted)', margin: 0 }}>No headline suggestions generated.</p>
                 )}
               </div>
             </div>
@@ -152,7 +152,7 @@ export default function LinkedinAnalyzer() {
             <div className="interview-card" style={{ padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
                 <h2 style={{ fontSize: '1.3rem', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--saas-primary)" strokeWidth="2.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                     <polyline points="14 2 14 8 20 8" />
                   </svg>
@@ -161,11 +161,11 @@ export default function LinkedinAnalyzer() {
                 <button
                   onClick={() => copyToClipboard(report.aboutSuggestions)}
                   style={{
-                    background: 'var(--saas-primary)',
+                    background: 'var(--accent)',
                     border: 'none',
                     borderRadius: '6px',
                     padding: '0.4rem 1rem',
-                    color: '#000',
+                    color: '#fff',
                     fontWeight: 'bold',
                     cursor: 'pointer',
                     fontSize: '0.85rem'
@@ -175,12 +175,12 @@ export default function LinkedinAnalyzer() {
                 </button>
               </div>
               <div style={{
-                background: 'rgba(0, 0, 0, 0.2)',
-                border: '1px solid rgba(255,255,255,0.05)',
+                background: 'var(--info-bg)',
+                border: '1px solid var(--border-color)',
                 padding: '1.5rem',
                 borderRadius: '8px',
                 lineHeight: '1.7',
-                color: '#ccc',
+                color: 'var(--text-muted)',
                 fontSize: '1rem',
                 whiteSpace: 'pre-wrap'
               }}>
@@ -192,7 +192,7 @@ export default function LinkedinAnalyzer() {
             {report.experienceSuggestions && report.experienceSuggestions.length > 0 && (
               <div className="interview-card" style={{ padding: '2rem' }}>
                 <h2 style={{ fontSize: '1.3rem', marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--saas-primary)" strokeWidth="2.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5">
                     <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
                     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                   </svg>
@@ -203,14 +203,14 @@ export default function LinkedinAnalyzer() {
                     <div
                       key={idx}
                       style={{
-                        borderBottom: idx < report.experienceSuggestions.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                        borderBottom: idx < report.experienceSuggestions.length - 1 ? '1px solid var(--border-color)' : 'none',
                         paddingBottom: idx < report.experienceSuggestions.length - 1 ? '1.5rem' : 0
                       }}
                     >
-                      <h4 style={{ margin: '0 0 0.5rem 0', color: '#fff', fontSize: '1.05rem' }}>
-                        {exp.role} at <span style={{ color: 'var(--saas-primary)' }}>{exp.company}</span>
+                      <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-primary)', fontSize: '1.05rem' }}>
+                        {exp.role} at <span style={{ color: 'var(--accent)' }}>{exp.company}</span>
                       </h4>
-                      <p style={{ color: '#aaa', margin: 0, fontSize: '0.95rem', lineHeight: '1.6' }}>
+                      <p style={{ color: 'var(--text-muted)', margin: 0, fontSize: '0.95rem', lineHeight: '1.6' }}>
                         {exp.suggestions}
                       </p>
                     </div>

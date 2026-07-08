@@ -24,12 +24,13 @@ const ADMIN_CREDENTIALS = {
 };
 
 async function seed() {
-  if (!process.env.MONGO_URI) {
-    console.error("❌  MONGO_URI not found in .env — aborting.");
+  const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+  if (!mongoUri) {
+    console.error("❌  MONGODB_URI or MONGO_URI not found in .env — aborting.");
     process.exit(1);
   }
 
-  await mongoose.connect(process.env.MONGO_URI);
+  await mongoose.connect(mongoUri);
   console.log("✅  Connected to MongoDB.");
 
   // Lazy-load model AFTER mongoose connection is ready

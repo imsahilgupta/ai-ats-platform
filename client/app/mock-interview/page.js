@@ -94,10 +94,10 @@ export default function MockInterviewConfig() {
                   style={{
                     width: '100%',
                     padding: '0.85rem 1rem',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    background: 'var(--bg-input)',
+                    border: '1px solid var(--border-color)',
                     borderRadius: '8px',
-                    color: '#fff',
+                    color: 'var(--text-primary)',
                     outline: 'none',
                     transition: 'border 0.2s',
                   }}
@@ -119,10 +119,10 @@ export default function MockInterviewConfig() {
                     style={{
                       width: '100%',
                       padding: '0.85rem 1rem',
-                      background: '#16161a',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      background: 'var(--bg-input)',
+                      border: '1px solid var(--border-color)',
                       borderRadius: '8px',
-                      color: '#fff',
+                      color: 'var(--text-primary)',
                       outline: 'none',
                     }}
                   >
@@ -144,10 +144,10 @@ export default function MockInterviewConfig() {
                     style={{
                       width: '100%',
                       padding: '0.85rem 1rem',
-                      background: '#16161a',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      background: 'var(--bg-input)',
+                      border: '1px solid var(--border-color)',
                       borderRadius: '8px',
-                      color: '#fff',
+                      color: 'var(--text-primary)',
                       outline: 'none',
                     }}
                   >

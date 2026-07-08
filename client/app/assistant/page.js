@@ -105,9 +105,9 @@ export default function AssistantCoach() {
                         borderRadius: '12px',
                         borderTopRightRadius: isUser ? '2px' : '12px',
                         borderTopLeftRadius: isUser ? '12px' : '2px',
-                        background: isUser ? 'var(--saas-primary)' : 'rgba(255, 255, 255, 0.03)',
-                        border: isUser ? 'none' : '1px solid rgba(255, 255, 255, 0.05)',
-                        color: isUser ? '#000' : '#f0f6fc',
+                        background: isUser ? 'var(--accent)' : 'var(--info-bg)',
+                        border: isUser ? 'none' : '1px solid var(--border-color)',
+                        color: isUser ? '#fff' : 'var(--text-primary)',
                         fontWeight: isUser ? '500' : 'normal',
                         lineHeight: '1.5',
                         fontSize: '0.95rem',
@@ -125,9 +125,9 @@ export default function AssistantCoach() {
                     padding: '0.85rem 1.1rem',
                     borderRadius: '12px',
                     borderTopLeftRadius: '2px',
-                    background: 'rgba(255, 255, 255, 0.03)',
-                    border: '1px solid rgba(255, 255, 255, 0.05)',
-                    color: '#888',
+                    background: 'var(--info-bg)',
+                    border: '1px solid var(--border-color)',
+                    color: 'var(--text-muted)',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.5rem'
@@ -143,8 +143,8 @@ export default function AssistantCoach() {
             {/* Input Form Bar */}
             <form onSubmit={(e) => handleSend(e)} style={{
               padding: '1rem',
-              borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-              background: 'rgba(0, 0, 0, 0.15)',
+              borderTop: '1px solid var(--border-color)',
+              background: 'var(--bg-page)',
               display: 'flex',
               gap: '0.75rem',
               alignItems: 'center',
@@ -159,10 +159,10 @@ export default function AssistantCoach() {
                 style={{
                   flexGrow: 1,
                   padding: '0.8rem 1rem',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  background: 'var(--bg-input)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: '8px',
-                  color: '#fff',
+                  color: 'var(--text-primary)',
                   outline: 'none',
                   fontSize: '0.95rem'
                 }}
@@ -191,7 +191,7 @@ export default function AssistantCoach() {
             
             {/* Quick Prompts */}
             <div className="interview-card" style={{ padding: '1.5rem' }}>
-              <h3 style={{ fontSize: '0.85rem', color: '#888', textTransform: 'uppercase', margin: '0 0 1rem 0' }}>Suggested Questions</h3>
+              <h3 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', margin: '0 0 1rem 0' }}>Suggested Questions</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {PRESET_PROMPTS.map((prompt, idx) => (
                   <button
@@ -199,12 +199,12 @@ export default function AssistantCoach() {
                     disabled={loading}
                     onClick={() => handleSend(null, prompt)}
                     style={{
-                      background: 'rgba(255,255,255,0.02)',
-                      border: '1px solid rgba(255,255,255,0.06)',
+                      background: 'var(--info-bg)',
+                      border: '1px solid var(--border-color)',
                       borderRadius: '6px',
                       padding: '0.6rem',
                       textAlign: 'left',
-                      color: '#ccc',
+                      color: 'var(--text-muted)',
                       fontSize: '0.85rem',
                       cursor: loading ? 'not-allowed' : 'pointer',
                       transition: 'all 0.2s',
@@ -212,13 +212,13 @@ export default function AssistantCoach() {
                     }}
                     onMouseEnter={(e) => {
                       if (!loading) {
-                        e.currentTarget.style.borderColor = 'var(--saas-primary)';
-                        e.currentTarget.style.color = '#fff';
+                        e.currentTarget.style.borderColor = 'var(--accent)';
+                        e.currentTarget.style.color = 'var(--accent)';
                       }
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)';
-                      e.currentTarget.style.color = '#ccc';
+                      e.currentTarget.style.borderColor = 'var(--border-color)';
+                      e.currentTarget.style.color = 'var(--text-muted)';
                     }}
                   >
                     {prompt}
@@ -229,8 +229,8 @@ export default function AssistantCoach() {
 
             {/* Context Widget */}
             <div className="interview-card" style={{ padding: '1.5rem' }}>
-              <h3 style={{ fontSize: '0.85rem', color: '#888', textTransform: 'uppercase', margin: '0 0 0.5rem 0' }}>Context Enriched</h3>
-              <p style={{ fontSize: '0.85rem', color: '#aaa', margin: 0, lineHeight: '1.5' }}>
+              <h3 style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', margin: '0 0 0.5rem 0' }}>Context Enriched</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0, lineHeight: '1.5' }}>
                 The coach automatically extracts database context from your latest resume ATS audit to deliver context-aware answers without manual copying.
               </p>
             </div>

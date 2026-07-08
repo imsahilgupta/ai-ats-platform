@@ -170,7 +170,7 @@ export default function JobApplicationsTracker() {
         <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
           <div>
             <h1 style={{ margin: 0 }}>Job Application <span className="highlight">Tracker</span></h1>
-            <p style={{ marginTop: '0.2rem', color: '#aaa' }}>Manage your active applications. Drag cards or use quick controls to change status.</p>
+            <p style={{ marginTop: '0.2rem', color: 'var(--text-muted)' }}>Manage your active applications. Drag cards or use quick controls to change status.</p>
           </div>
           <button onClick={handleOpenCreateModal} className="button primary-button" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -198,8 +198,8 @@ export default function JobApplicationsTracker() {
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, col)}
                 style={{
-                  background: 'rgba(255, 255, 255, 0.02)',
-                  border: '1px solid rgba(255, 255, 255, 0.05)',
+                  background: 'var(--info-bg)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: '8px',
                   padding: '1rem',
                   minHeight: '400px',
@@ -208,11 +208,11 @@ export default function JobApplicationsTracker() {
                   gap: '0.75rem'
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.5rem', marginBottom: '0.5rem' }}>
-                  <h3 style={{ fontSize: '0.95rem', fontWeight: 'bold', margin: 0, textTransform: 'uppercase', color: col === 'Offer' ? '#3fb950' : col === 'Rejected' ? '#ff4d4f' : '#fff' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '0.5rem' }}>
+                  <h3 style={{ fontSize: '0.95rem', fontWeight: 'bold', margin: 0, textTransform: 'uppercase', color: col === 'Offer' ? 'var(--severity-low)' : col === 'Rejected' ? 'var(--severity-high)' : 'var(--text-primary)' }}>
                     {col}
                   </h3>
-                  <span style={{ fontSize: '0.8rem', background: 'rgba(255,255,255,0.08)', padding: '0.1rem 0.4rem', borderRadius: '4px', color: '#ccc' }}>
+                  <span style={{ fontSize: '0.8rem', background: 'var(--border-color)', padding: '0.1rem 0.4rem', borderRadius: '4px', color: 'var(--text-muted)' }}>
                     {filteredJobs.length}
                   </span>
                 </div>
@@ -227,8 +227,8 @@ export default function JobApplicationsTracker() {
                       style={{
                         padding: '1rem',
                         cursor: 'grab',
-                        background: 'rgba(0, 0, 0, 0.2)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        background: 'var(--bg-card)',
+                        border: '1px solid var(--border-color)',
                         borderRadius: '6px',
                         display: 'flex',
                         flexDirection: 'column',
@@ -236,12 +236,12 @@ export default function JobApplicationsTracker() {
                       }}
                     >
                       <div>
-                        <h4 style={{ margin: 0, fontSize: '0.95rem', color: '#fff', fontWeight: 'bold' }}>{job.role}</h4>
-                        <p style={{ margin: '0.1rem 0 0 0', fontSize: '0.85rem', color: 'var(--saas-primary)' }}>{job.company}</p>
+                        <h4 style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-primary)', fontWeight: 'bold' }}>{job.role}</h4>
+                        <p style={{ margin: '0.1rem 0 0 0', fontSize: '0.85rem', color: 'var(--accent)' }}>{job.company}</p>
                       </div>
 
                       {job.interviewDate && (
-                        <div style={{ fontSize: '0.75rem', color: '#aaa', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                             <line x1="16" y1="2" x2="16" y2="6" />
@@ -252,18 +252,18 @@ export default function JobApplicationsTracker() {
                         </div>
                       )}
 
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '0.5rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
                         {/* Edit/Delete controls */}
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                           <button
                             onClick={() => handleOpenEditModal(job)}
-                            style={{ background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', fontSize: '0.75rem', padding: 0 }}
+                            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.75rem', padding: 0 }}
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleDelete(job._id)}
-                            style={{ background: 'none', border: 'none', color: '#ff4d4f', cursor: 'pointer', fontSize: '0.75rem', padding: 0 }}
+                            style={{ background: 'none', border: 'none', color: 'var(--severity-high)', cursor: 'pointer', fontSize: '0.75rem', padding: 0 }}
                           >
                             Delete
                           </button>
@@ -274,10 +274,10 @@ export default function JobApplicationsTracker() {
                           value={job.status}
                           onChange={(e) => handleQuickStatusChange(job._id, e.target.value)}
                           style={{
-                            background: '#16161a',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: 'var(--bg-card)',
+                            border: '1px solid var(--border-color)',
                             borderRadius: '4px',
-                            color: '#ccc',
+                            color: 'var(--text-primary)',
                             fontSize: '0.75rem',
                             padding: '0.1rem 0.2rem'
                           }}
@@ -290,7 +290,7 @@ export default function JobApplicationsTracker() {
                     </div>
                   ))}
                   {filteredJobs.length === 0 && (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100px', border: '1px dashed rgba(255,255,255,0.03)', borderRadius: '6px', color: '#555', fontSize: '0.85rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100px', border: '1px dashed var(--border-color)', borderRadius: '6px', color: 'var(--text-muted-light)', fontSize: '0.85rem' }}>
                       Drop jobs here
                     </div>
                   )}
@@ -308,14 +308,14 @@ export default function JobApplicationsTracker() {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(0, 0, 0, 0.7)',
+            background: 'rgba(0, 0, 0, 0.45)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 1000,
             padding: '1rem'
           }}>
-            <div className="interview-card" style={{ maxWidth: '500px', width: '100%', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative' }}>
+            <div className="interview-card" style={{ maxWidth: '500px', width: '100%', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative', background: 'var(--bg-card)', boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
               <button
                 onClick={() => setIsModalOpen(false)}
                 style={{
@@ -324,7 +324,7 @@ export default function JobApplicationsTracker() {
                   right: '1rem',
                   background: 'none',
                   border: 'none',
-                  color: '#fff',
+                  color: 'var(--text-muted)',
                   fontSize: '1.25rem',
                   cursor: 'pointer'
                 }}
@@ -339,43 +339,43 @@ export default function JobApplicationsTracker() {
               <form onSubmit={handleFormSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.85rem', color: '#ccc' }}>Company <span style={{ color: 'red' }}>*</span></label>
+                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Company <span style={{ color: 'var(--severity-high)' }}>*</span></label>
                     <input
                       type="text"
                       required
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
-                      style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff', outline: 'none' }}
+                      style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-input)', color: 'var(--text-primary)', outline: 'none' }}
                     />
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.85rem', color: '#ccc' }}>Role <span style={{ color: 'red' }}>*</span></label>
+                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Role <span style={{ color: 'var(--severity-high)' }}>*</span></label>
                     <input
                       type="text"
                       required
                       value={role}
                       onChange={(e) => setRole(e.target.value)}
-                      style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff', outline: 'none' }}
+                      style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-input)', color: 'var(--text-primary)', outline: 'none' }}
                     />
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.85rem', color: '#ccc' }}>Job Description</label>
+                  <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Job Description</label>
                   <textarea
                     value={jobDescription}
                     onChange={(e) => setJobDescription(e.target.value)}
-                    style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff', outline: 'none', minHeight: '80px', fontSize: '0.85rem' }}
+                    style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-input)', color: 'var(--text-primary)', outline: 'none', minHeight: '80px', fontSize: '0.85rem' }}
                   />
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.85rem', color: '#ccc' }}>Status</label>
+                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Status</label>
                     <select
                       value={status}
                       onChange={(e) => setStatus(e.target.value)}
-                      style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: '#16161a', color: '#fff', outline: 'none' }}
+                      style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-card)', color: 'var(--text-primary)', outline: 'none' }}
                     >
                       {COLUMNS.map(c => (
                         <option key={c} value={c}>{c}</option>
@@ -383,22 +383,22 @@ export default function JobApplicationsTracker() {
                     </select>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <label style={{ fontSize: '0.85rem', color: '#ccc' }}>Interview Date</label>
+                    <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Interview Date</label>
                     <input
                       type="date"
                       value={interviewDate}
                       onChange={(e) => setInterviewDate(e.target.value)}
-                      style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff', outline: 'none' }}
+                      style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-input)', color: 'var(--text-primary)', outline: 'none' }}
                     />
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                  <label style={{ fontSize: '0.85rem', color: '#ccc' }}>Notes</label>
+                  <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Notes</label>
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff', outline: 'none', minHeight: '80px', fontSize: '0.85rem' }}
+                    style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-input)', color: 'var(--text-primary)', outline: 'none', minHeight: '80px', fontSize: '0.85rem' }}
                   />
                 </div>
 

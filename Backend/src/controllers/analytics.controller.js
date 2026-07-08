@@ -1,128 +1,131 @@
 const mockInterviewSessionModel = require("../models/mockInterviewSession.model");
 const userProgressModel = require("../models/userProgress.model");
-const jobApplicationModel = require("../models/jobApplication.model");
 const resumeReportModel = require("../models/resumeReport.model");
 
 async function getAnalyticsController(req, res) {
-    try {
-        const userId = req.user.id;
+  try {
+    const userId = req.user.id;
 
-        // Fetch User Progress
-        let progress = await userProgressModel.findOne({ user: userId });
-        if (!progress) {
-            progress = await userProgressModel.create({ user: userId, xp: 0, level: 1 });
-        }
-
-        // Fetch Mock Interview Sessions
-        const sessions = await mockInterviewSessionModel.find({ user: userId, status: "completed" });
-        const interviewCount = sessions.length;
-        
-        let avgTechnical = 0;
-        let avgBehavioral = 0;
-        let avgHR = 0;
-        let avgOverall = 0;
-
-        let techCount = 0;
-        let behavCount = 0;
-        let hrCount = 0;
-
-        sessions.forEach(session => {
-            avgOverall += session.overallScore;
-            if (session.interviewType === "technical" || session.interviewType === "system-design") {
-                avgTechnical += session.overallScore;
-                techCount++;
-            } else if (session.interviewType === "behavioral") {
-                avgBehavioral += session.overallScore;
-                behavCount++;
-            } else if (session.interviewType === "hr") {
-                avgHR += session.overallScore;
-                hrCount++;
-            }
-        });
-
-        avgOverall = interviewCount > 0 ? Math.round(avgOverall / interviewCount) : 0;
-        avgTechnical = techCount > 0 ? Math.round(avgTechnical / techCount) : 0;
-        avgBehavioral = behavCount > 0 ? Math.round(avgBehavioral / behavCount) : 0;
-        avgHR = hrCount > 0 ? Math.round(avgHR / hrCount) : 0;
-
-        // Fetch Resume Reports
-        const resumes = await resumeReportModel.find({ user: userId }).sort({ createdAt: -1 });
-        const latestResumeScore = resumes.length > 0 ? resumes[0].atsScore : 0;
-
-        // Fetch Job Tracker Stats
-        const jobs = await jobApplicationModel.find({ user: userId });
-        const jobStats = {
-            Saved: 0,
-            Applied: 0,
-            Interview: 0,
-            Offer: 0,
-            Rejected: 0
-        };
-        jobs.forEach(j => {
-            if (jobStats[j.status] !== undefined) {
-                jobStats[j.status]++;
-            }
-        });
-
-        res.status(200).json({
-            level: progress.level,
-            xp: progress.xp,
-            badges: progress.badges,
-            interviewPerformance: {
-                technical: avgTechnical || 75, // Fallback placeholder if no data to display pretty charts
-                behavioral: avgBehavioral || 70,
-                hr: avgHR || 80,
-                overall: avgOverall || 75
-            },
-            latestResumeScore,
-            jobStats,
-            sessionsHistory: sessions.map(s => ({
-                id: s._id,
-                role: s.role,
-                type: s.interviewType,
-                score: s.overallScore,
-                date: s.createdAt
-            }))
-        });
-    } catch (error) {
-        console.error("Get analytics error:", error);
-        res.status(500).json({ message: "Failed to compile analytics.", error: error.message });
+    // Fetch User Progress
+    let progress = await userProgressModel.findOne({ user: userId });
+    if (!progress) {
+      progress = await userProgressModel.create({
+        user: userId,
+        xp: 0,
+        level: 1,
+      });
     }
-}
 
+    // Fetch Mock Interview Sessions
+    const sessions = await mockInterviewSessionModel.find({
+      user: userId,
+      status: "completed",
+    });
+    const interviewCount = sessions.length;
+
+    let avgTechnical = 0;
+    let avgBehavioral = 0;
+    let avgHR = 0;
+    let avgOverall = 0;
+
+    let techCount = 0;
+    let behavCount = 0;
+    let hrCount = 0;
+
+    sessions.forEach((session) => {
+      avgOverall += session.overallScore;
+      if (
+        session.interviewType === "technical" ||
+        session.interviewType === "system-design"
+      ) {
+        avgTechnical += session.overallScore;
+        techCount++;
+      } else if (session.interviewType === "behavioral") {
+        avgBehavioral += session.overallScore;
+        behavCount++;
+      } else if (session.interviewType === "hr") {
+        avgHR += session.overallScore;
+        hrCount++;
+      }
+    });
+
+    avgOverall =
+      interviewCount > 0 ? Math.round(avgOverall / interviewCount) : 0;
+    avgTechnical = techCount > 0 ? Math.round(avgTechnical / techCount) : 0;
+    avgBehavioral = behavCount > 0 ? Math.round(avgBehavioral / behavCount) : 0;
+    avgHR = hrCount > 0 ? Math.round(avgHR / hrCount) : 0;
+
+    // Fetch Resume Reports
+    const resumes = await resumeReportModel
+      .find({ user: userId })
+      .sort({ createdAt: -1 });
+    const latestResumeScore = resumes.length > 0 ? resumes[0].atsScore : 0;
+
+    res.status(200).json({
+      level: progress.level,
+      xp: progress.xp,
+      badges: progress.badges,
+      interviewPerformance: {
+        technical: avgTechnical || 75,
+        behavioral: avgBehavioral || 70,
+        hr: avgHR || 80,
+        overall: avgOverall || 75,
+      },
+      latestResumeScore,
+      sessionsHistory: sessions.map((s) => ({
+        id: s._id,
+        role: s.role,
+        type: s.interviewType,
+        score: s.overallScore,
+        date: s.createdAt,
+      })),
+    });
+  } catch (error) {
+    console.error("Get analytics error:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to compile analytics.", error: error.message });
+  }
+}
 
 /**
  * Admin-only: platform-wide system stats
  */
 async function getAdminStatsController(req, res) {
-    try {
-        const userModel = require("../models/user.model");
-        const subscriptionModel = require("../models/subscription.model");
+  try {
+    const userModel = require("../models/user.model");
+    const subscriptionModel = require("../models/subscription.model");
 
-        const [totalUsers, totalSessions, totalResumes, totalJobs, proSubs] =
-            await Promise.all([
-                userModel.countDocuments(),
-                mockInterviewSessionModel.countDocuments(),
-                resumeReportModel.countDocuments(),
-                jobApplicationModel.countDocuments(),
-                subscriptionModel.countDocuments({ plan: { $ne: "FREE" }, isActive: true }),
-            ]);
+    const [totalUsers, totalSessions, totalResumes, proSubs] =
+      await Promise.all([
+        userModel.countDocuments(),
+        mockInterviewSessionModel.countDocuments(),
+        resumeReportModel.countDocuments(),
+        subscriptionModel.countDocuments({
+          plan: { $ne: "FREE" },
+          isActive: true,
+        }),
+      ]);
 
-        res.status(200).json({
-            totalUsers,
-            totalSessions,
-            totalResumes,
-            totalJobs,
-            activeSubscribers: proSubs,
-            monthlyRecurringRevenue: proSubs * 15, // $15/month per PRO seat (mock)
-        });
-    } catch (error) {
-        console.error("Admin stats error:", error);
-        res.status(500).json({ message: "Failed to compile admin stats.", error: error.message });
-    }
+    res.status(200).json({
+      totalUsers,
+      totalSessions,
+      totalResumes,
+      activeSubscribers: proSubs,
+      monthlyRecurringRevenue: proSubs * 15,
+    });
+  } catch (error) {
+    console.error("Admin stats error:", error);
+    res
+      .status(500)
+      .json({
+        message: "Failed to compile admin stats.",
+        error: error.message,
+      });
+  }
 }
 
 module.exports = {
-    getAnalyticsController,
-    getAdminStatsController,
+  getAnalyticsController,
+  getAdminStatsController,
 };

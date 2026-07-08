@@ -1,18 +1,75 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000",
   withCredentials: true,
 });
 
+export function getAiErrorMessage(
+  error,
+  fallback = "Something went wrong. Please try again.",
+) {
+  const serverMessage =
+    error?.response?.data?.message ||
+    error?.response?.data?.error ||
+    error?.message ||
+    "";
+  const message = serverMessage.toString().toLowerCase();
+
+  if (message.includes("rate limit") || error?.response?.status === 429) {
+    return "We hit a temporary rate limit. Please wait a moment and try again.";
+  }
+
+  if (
+    message.includes("timeout") ||
+    message.includes("timed out") ||
+    error?.response?.status === 504
+  ) {
+    return "The AI took too long to respond. Please try again in a moment.";
+  }
+
+  if (
+    message.includes("invalid ai") ||
+    message.includes("invalid response") ||
+    message.includes("malformed") ||
+    message.includes("empty response")
+  ) {
+    return "The AI returned an incomplete response. Please try again.";
+  }
+
+  if (
+    (message.includes("upload") || message.includes("file")) &&
+    (message.includes("fail") ||
+      message.includes("error") ||
+      message.includes("size") ||
+      message.includes("type"))
+  ) {
+    return "The file could not be processed. Please try a PDF or DOCX under 5MB.";
+  }
+
+  return fallback;
+}
+
 // Mock Interview APIs
-export async function startMockSession({ role, experienceLevel, interviewType }) {
-  const response = await api.post("/api/mock-interview/start", { role, experienceLevel, interviewType });
+export async function startMockSession({
+  role,
+  experienceLevel,
+  interviewType,
+}) {
+  const response = await api.post("/api/mock-interview/start", {
+    role,
+    experienceLevel,
+    interviewType,
+  });
   return response.data;
 }
 
 export async function submitMockAnswer({ sessionId, answer, durationSeconds }) {
-  const response = await api.post("/api/mock-interview/answer", { sessionId, answer, durationSeconds });
+  const response = await api.post("/api/mock-interview/answer", {
+    sessionId,
+    answer,
+    durationSeconds,
+  });
   return response.data;
 }
 
@@ -21,10 +78,11 @@ export async function getMockResult(id) {
   return response.data;
 }
 
-// Resume & LinkedIn Optimization APIs
-export async function analyzeResume(resumeFile) {
+// Resume APIs
+export async function analyzeResume(resumeFile, jobDescription) {
   const formData = new FormData();
   formData.append("resume", resumeFile);
+  formData.append("jobDescription", jobDescription || "");
   const response = await api.post("/api/resume/analyze", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -33,35 +91,45 @@ export async function analyzeResume(resumeFile) {
   return response.data;
 }
 
-export async function analyzeLinkedin(profileText) {
-  const response = await api.post("/api/resume/linkedin", { profileText });
+export async function getResumeHistory() {
+  const response = await api.get("/api/resume/history");
   return response.data;
 }
 
-// Job Tracker APIs
+export async function analyzeLinkedin(profileText) {
+  return Promise.reject(
+    new Error("The LinkedIn optimizer is no longer available."),
+  );
+}
+
 export async function getJobApplications() {
-  const response = await api.get("/api/job-applications");
-  return response.data;
+  return Promise.reject(new Error("The job tracker is no longer available."));
 }
 
 export async function createJobApplication(data) {
-  const response = await api.post("/api/job-applications", data);
-  return response.data;
+  return Promise.reject(new Error("The job tracker is no longer available."));
 }
 
 export async function updateJobApplication(id, data) {
-  const response = await api.put(`/api/job-applications/${id}`, data);
-  return response.data;
+  return Promise.reject(new Error("The job tracker is no longer available."));
 }
 
 export async function deleteJobApplication(id) {
-  const response = await api.delete(`/api/job-applications/${id}`);
-  return response.data;
+  return Promise.reject(new Error("The job tracker is no longer available."));
+}
+
+export async function chatAssistant(message, context) {
+  return Promise.reject(new Error("The career coach is no longer available."));
 }
 
 // Analytics APIs
 export async function getAnalytics() {
   const response = await api.get("/api/analytics");
+  return response.data;
+}
+
+export async function getAdminStats() {
+  const response = await api.get("/api/analytics/admin/stats");
   return response.data;
 }
 
@@ -73,11 +141,5 @@ export async function getSubscription() {
 
 export async function upgradeSubscription(plan) {
   const response = await api.post("/api/subscription/upgrade", { plan });
-  return response.data;
-}
-
-// Career Assistant APIs
-export async function chatAssistant(message, context) {
-  const response = await api.post("/api/assistant/chat", { message, context });
   return response.data;
 }
