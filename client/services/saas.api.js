@@ -96,32 +96,6 @@ export async function getResumeHistory() {
   return response.data;
 }
 
-export async function analyzeLinkedin(profileText) {
-  return Promise.reject(
-    new Error("The LinkedIn optimizer is no longer available."),
-  );
-}
-
-export async function getJobApplications() {
-  return Promise.reject(new Error("The job tracker is no longer available."));
-}
-
-export async function createJobApplication(data) {
-  return Promise.reject(new Error("The job tracker is no longer available."));
-}
-
-export async function updateJobApplication(id, data) {
-  return Promise.reject(new Error("The job tracker is no longer available."));
-}
-
-export async function deleteJobApplication(id) {
-  return Promise.reject(new Error("The job tracker is no longer available."));
-}
-
-export async function chatAssistant(message, context) {
-  return Promise.reject(new Error("The career coach is no longer available."));
-}
-
 // Analytics APIs
 export async function getAnalytics() {
   const response = await api.get("/api/analytics");
