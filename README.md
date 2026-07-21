@@ -17,7 +17,8 @@
 | **👤 Profile** | Photo, skills, education, experience, resume file, social accounts, and account deletion. |
 | **🌐 Marketing site** | Landing page, About, Features, Pricing, Contact, Help Center, Blog, and legal pages. |
 | **🛠️ Admin Panel** | Real, live data for Users, Subscriptions, Reports, Analytics/Growth, Database, and Server Health (see below). Payments, Support Tickets, Feedback, Announcements, and API Logs are demo/preview data — no backing feature exists for these yet. |
-| **🔐 Authentication** | Email/password + Google OAuth. JWT stored in an httpOnly cookie, with token blacklisting on logout. |
+| **🔐 Authentication** | Email/password + Google OAuth. Registration requires a 6-digit emailed verification code before login is allowed. JWT stored in an httpOnly cookie, with token blacklisting on logout. |
+| **📧 Email notifications** | Real emails (via Nodemailer) for: registration verification codes, password reset codes, plan upgrades, and completed mock interviews/resume analyses/career reports. Falls back to console logging if SMTP isn't configured. |
 
 ---
 
@@ -156,6 +157,15 @@ GOOGLE_CALLBACK_URL=http://localhost:5000/api/auth/google/callback
 ESEWA_PRODUCT_CODE=EPAYTEST
 ESEWA_SECRET_KEY=8gBm/:&EnhH.1/q
 ESEWA_GATEWAY_URL=https://rc-epay.esewa.com.np/api/epay/main/v2/form
+
+# SMTP (email verification, password reset, and result/plan notification emails).
+# If omitted, emails are logged to the console instead of sent — nothing crashes,
+# but users won't receive real verification/reset codes.
+SMTP_HOST=
+SMTP_PORT=587
+SMTP_USER=
+SMTP_PASS=
+MAIL_FROM="MockMate.AI <no-reply@mockmate.ai>"
 ```
 
 ```bash
@@ -196,8 +206,12 @@ Creates (or upgrades) an admin account — see `Backend/src/scripts/seedAdmin.js
 ### Authentication (`/api/auth`)
 | Method | Endpoint | Description |
 |---|---|---|
-| POST | `/register` | Register new user |
-| POST | `/login` | Login, sets JWT cookie |
+| POST | `/register` | Register new user (unverified — emails a 6-digit code) |
+| POST | `/verify-email` | Verify the emailed code, sets JWT cookie |
+| POST | `/resend-verification` | Resend the verification code |
+| POST | `/forgot-password` | Email a password reset code |
+| POST | `/reset-password` | Reset password using the emailed code |
+| POST | `/login` | Login, sets JWT cookie (blocked with `403` until verified) |
 | GET | `/logout` | Blacklist token & clear cookie |
 | GET | `/get-me` | Get current user |
 | PATCH | `/update-username` | Change username |

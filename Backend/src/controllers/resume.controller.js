@@ -1,8 +1,10 @@
 const resumeReportModel = require("../models/resumeReport.model");
+const userModel = require("../models/user.model");
 const geminiService = require("../services/gemini.services");
 const pdfParse = require("pdf-parse");
 const mammoth = require("mammoth");
 const { getUsageWindowState } = require("../utils/usageLimits");
+const { sendResumeAnalysisCompletedEmail } = require("../services/mail.services");
 
 /**
  * Perform detailed ATS analysis on uploaded resume
@@ -59,6 +61,14 @@ async function analyzeResumeController(req, res) {
       versionLabel: `v${existingReports + 1}`,
       sourceType,
     });
+
+    const user = await userModel.findById(req.user.id);
+    if (user) {
+      sendResumeAnalysisCompletedEmail(user.email, {
+        atsScore: report.atsScore,
+        versionLabel: report.versionLabel,
+      }).catch((err) => console.error("Failed to send resume analysis email:", err));
+    }
 
     res.status(200).json({
       message: "Resume analyzed successfully.",

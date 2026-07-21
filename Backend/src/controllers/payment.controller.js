@@ -1,6 +1,8 @@
 const subscriptionModel = require("../models/subscription.model");
+const userModel = require("../models/user.model");
 const Stripe = require("stripe");
 const crypto = require("crypto");
+const { sendBillingReceiptEmail } = require("../services/mail.services");
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY)
@@ -203,6 +205,18 @@ async function verifyEsewaPayment(req, res) {
       },
       { new: true, upsert: true }
     );
+
+    const user = await userModel.findById(req.user.id);
+    if (user) {
+      sendBillingReceiptEmail(user.email, {
+        plan,
+        amountNpr: parseFloat(total_amount),
+        transactionId: transaction_uuid,
+        gateway: "eSewa",
+        billedAt: updatedSub.startDate,
+        renewsAt: updatedSub.endDate,
+      }).catch((err) => console.error("Failed to send billing receipt email:", err));
+    }
 
     res.status(200).json({
       message: `Successfully upgraded to ${plan}!`,

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -18,7 +18,6 @@ import { FieldError } from "@/components/auth/field-error";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { register as registerUser } from "@/lib/api/auth";
 import { ApiError } from "@/types/api";
-import { qk } from "@/lib/query/keys";
 
 // Mirrors Backend/src/utils/validation.js exactly (validatePasswordStrength,
 // validateUsername) so client-side errors match what the server would reject.
@@ -47,7 +46,6 @@ type RegisterValues = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -71,9 +69,8 @@ export function RegisterForm() {
   const mutation = useMutation({
     mutationFn: registerUser,
     onSuccess: (data) => {
-      queryClient.setQueryData(qk.me(), data.user);
-      toast.success("Account created — welcome to MockMate.AI!");
-      router.push("/dashboard");
+      toast.success("Check your email for a verification code");
+      router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
     },
     onError: (error) => {
       if (error instanceof ApiError) {

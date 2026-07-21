@@ -7,6 +7,11 @@ const {
   validateEmail,
   validateUsername,
 } = require("../utils/validation");
+const { generateOtp, hashOtp, otpExpiry, verifyOtp } = require("../utils/otp");
+const {
+  sendVerificationCodeEmail,
+  sendPasswordResetCodeEmail,
+} = require("../services/mail.services");
 
 /**
  * Secure cookie options
@@ -72,23 +77,73 @@ async function registerUserController(req, res) {
     }
 
     const hash = await bcrypt.hash(password, 10);
+    const code = generateOtp();
+    const codeHash = await hashOtp(code);
 
     const user = await userModel.create({
       username,
       email,
       password: hash,
+      isVerified: false,
+      emailVerificationCodeHash: codeHash,
+      emailVerificationExpires: otpExpiry(),
     });
+
+    await sendVerificationCodeEmail(user.email, code);
+
+    // No login cookie yet — the account must be verified first.
+    res.status(201).json({
+      message: "Account created. Check your email for a verification code.",
+      email: user.email,
+    });
+  } catch (err) {
+    console.error("Registration error:", err);
+    res.status(500).json({
+      message: "An error occurred during registration",
+    });
+  }
+}
+
+/**
+ * @name verifyEmailController
+ * @desc Verify a registration code and log the user in
+ * @access public
+ */
+async function verifyEmailController(req, res) {
+  try {
+    const { email, code } = req.body;
+    if (!email || !code) {
+      return res.status(400).json({ message: "Email and code are required" });
+    }
+
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "No account found for this email" });
+    }
+
+    if (user.isVerified) {
+      return res.status(400).json({ message: "This account is already verified" });
+    }
+
+    const isValid = await verifyOtp(code, user.emailVerificationCodeHash, user.emailVerificationExpires);
+    if (!isValid) {
+      return res.status(400).json({ message: "Invalid or expired code" });
+    }
+
+    user.isVerified = true;
+    user.emailVerificationCodeHash = null;
+    user.emailVerificationExpires = null;
+    await user.save();
 
     const token = jwt.sign(
       { id: user._id, username: user.username, isAdmin: user.isAdmin },
       process.env.JWT_SECRET,
       { expiresIn: "1d" },
     );
-
     res.cookie("token", token, getCookieOptions());
 
-    res.status(201).json({
-      message: "User registered successfully",
+    res.status(200).json({
+      message: "Email verified successfully",
       user: {
         id: user._id,
         username: user.username,
@@ -97,10 +152,108 @@ async function registerUserController(req, res) {
       },
     });
   } catch (err) {
-    console.error("Registration error:", err);
-    res.status(500).json({
-      message: "An error occurred during registration",
-    });
+    console.error("Verify email error:", err);
+    res.status(500).json({ message: "An error occurred while verifying your email" });
+  }
+}
+
+/**
+ * @name resendVerificationController
+ * @desc Resend the email verification code
+ * @access public
+ */
+async function resendVerificationController(req, res) {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await userModel.findOne({ email });
+    if (user && !user.isVerified) {
+      const code = generateOtp();
+      user.emailVerificationCodeHash = await hashOtp(code);
+      user.emailVerificationExpires = otpExpiry();
+      await user.save();
+      await sendVerificationCodeEmail(user.email, code);
+    }
+
+    // Generic response either way — don't reveal account existence/state.
+    res.status(200).json({ message: "If an account needs verification, a new code was sent." });
+  } catch (err) {
+    console.error("Resend verification error:", err);
+    res.status(500).json({ message: "An error occurred while resending the code" });
+  }
+}
+
+/**
+ * @name forgotPasswordController
+ * @desc Email a password reset code
+ * @access public
+ */
+async function forgotPasswordController(req, res) {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await userModel.findOne({ email });
+    if (user) {
+      const code = generateOtp();
+      user.passwordResetCodeHash = await hashOtp(code);
+      user.passwordResetExpires = otpExpiry();
+      await user.save();
+      await sendPasswordResetCodeEmail(user.email, code);
+    }
+
+    // Generic response either way — don't reveal whether the account exists.
+    res.status(200).json({ message: "If an account exists, a reset code was sent." });
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    res.status(500).json({ message: "An error occurred while requesting a password reset" });
+  }
+}
+
+/**
+ * @name resetPasswordController
+ * @desc Reset a password using an emailed code
+ * @access public
+ */
+async function resetPasswordController(req, res) {
+  try {
+    const { email, code, newPassword } = req.body;
+    if (!email || !code || !newPassword) {
+      return res.status(400).json({ message: "Email, code, and new password are required" });
+    }
+
+    const passwordValidation = validatePasswordStrength(newPassword);
+    if (!passwordValidation.isValid) {
+      return res.status(400).json({
+        message: "Password does not meet strength requirements",
+        errors: passwordValidation.errors,
+      });
+    }
+
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired code" });
+    }
+
+    const isValid = await verifyOtp(code, user.passwordResetCodeHash, user.passwordResetExpires);
+    if (!isValid) {
+      return res.status(400).json({ message: "Invalid or expired code" });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.passwordResetCodeHash = null;
+    user.passwordResetExpires = null;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successfully. You can now log in." });
+  } catch (err) {
+    console.error("Reset password error:", err);
+    res.status(500).json({ message: "An error occurred while resetting your password" });
   }
 }
 
@@ -133,6 +286,14 @@ async function loginUserController(req, res) {
     if (!isPasswordValid) {
       return res.status(401).json({
         message: "Invalid email or password",
+      });
+    }
+
+    if (!user.isVerified) {
+      return res.status(403).json({
+        message: "Please verify your email before logging in.",
+        requiresVerification: true,
+        email: user.email,
       });
     }
 
@@ -374,6 +535,7 @@ async function googleCallbackController(req, res) {
         username: finalUsername,
         email: userData.email,
         password: hash,
+        isVerified: true, // Google already confirmed this email address
       });
     }
 
@@ -473,6 +635,7 @@ async function githubCallbackController(req, res) {
         username: finalUsername,
         email: primaryEmail,
         password: hash,
+        isVerified: true, // GitHub already confirmed this email address
       });
     }
 
@@ -492,6 +655,10 @@ async function githubCallbackController(req, res) {
 
 module.exports = {
   registerUserController,
+  verifyEmailController,
+  resendVerificationController,
+  forgotPasswordController,
+  resetPasswordController,
   loginUserController,
   logoutUserController,
   getMeController,

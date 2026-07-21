@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FieldError } from "@/components/auth/field-error";
-import { requestPasswordReset } from "@/lib/api/auth";
+import { forgotPassword } from "@/lib/api/auth";
 
 const schema = z.object({ email: z.email("Enter a valid email address") });
 type Values = z.infer<typeof schema>;
@@ -26,7 +26,7 @@ export function ForgotPasswordForm() {
   } = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { email: "" } });
 
   const mutation = useMutation({
-    mutationFn: requestPasswordReset,
+    mutationFn: forgotPassword,
     onSuccess: (_, email) => setSentTo(email),
   });
 
@@ -40,9 +40,12 @@ export function ForgotPasswordForm() {
           <h1 className="text-2xl font-semibold tracking-tight">Check your email</h1>
           <p className="text-sm text-muted-foreground">
             If an account exists for <span className="font-medium text-foreground">{sentTo}</span>, we&apos;ve
-            sent a link to reset your password.
+            sent a 6-digit code to reset your password.
           </p>
         </div>
+        <Button render={<Link href={`/reset-password?email=${encodeURIComponent(sentTo)}`} />} className="w-full" size="lg">
+          Enter code
+        </Button>
         <Link href="/login" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
           <ArrowLeft className="size-4" />
           Back to sign in
@@ -56,10 +59,7 @@ export function ForgotPasswordForm() {
       <div className="space-y-1.5">
         <h1 className="text-2xl font-semibold tracking-tight">Forgot your password?</h1>
         <p className="text-sm text-muted-foreground">
-          Enter your email and we&apos;ll send you a link to reset it.
-        </p>
-        <p className="rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-warning-foreground/80">
-          Password reset is in preview — this flow isn&apos;t connected to a live email service yet.
+          Enter your email and we&apos;ll send you a 6-digit code to reset it.
         </p>
       </div>
 
@@ -78,7 +78,7 @@ export function ForgotPasswordForm() {
 
         <Button type="submit" className="w-full" size="lg" disabled={mutation.isPending}>
           {mutation.isPending && <Loader2 className="size-4 animate-spin" />}
-          Send reset link
+          Send reset code
         </Button>
       </form>
 

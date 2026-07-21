@@ -1,11 +1,33 @@
 import { apiFetch } from "@/lib/api/client";
 import { ApiError } from "@/types/api";
-import type { AuthResponse, LoginPayload, RegisterPayload, User } from "@/types/auth";
+import type {
+  AuthResponse,
+  LoginPayload,
+  RegisterPayload,
+  RegisterResponse,
+  ResetPasswordPayload,
+  User,
+  VerifyEmailPayload,
+} from "@/types/auth";
 
 export function register(payload: RegisterPayload) {
-  return apiFetch<AuthResponse>("/auth/register", {
+  return apiFetch<RegisterResponse>("/auth/register", {
     method: "POST",
     body: JSON.stringify(payload),
+  });
+}
+
+export function verifyEmail(payload: VerifyEmailPayload) {
+  return apiFetch<AuthResponse>("/auth/verify-email", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function resendVerification(email: string) {
+  return apiFetch<{ message: string }>("/auth/resend-verification", {
+    method: "POST",
+    body: JSON.stringify({ email }),
   });
 }
 
@@ -54,16 +76,16 @@ export function deleteAccount() {
   });
 }
 
-// No backend route exists for these yet — kept as signature-compatible stubs
-// (see plan: forgot/reset password are UI previews, not persisted server-side).
-export function requestPasswordReset(_email: string) {
-  return new Promise<{ message: string }>((resolve) => {
-    setTimeout(() => resolve({ message: "If an account exists, a reset link was sent." }), 900);
+export function forgotPassword(email: string) {
+  return apiFetch<{ message: string }>("/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
   });
 }
 
-export function resetPassword(_token: string, _password: string) {
-  return new Promise<{ message: string }>((resolve) => {
-    setTimeout(() => resolve({ message: "Password reset successfully." }), 900);
+export function resetPassword(payload: ResetPasswordPayload) {
+  return apiFetch<{ message: string }>("/auth/reset-password", {
+    method: "POST",
+    body: JSON.stringify(payload),
   });
 }

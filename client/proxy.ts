@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const AUTH_ONLY_ROUTES = ["/login", "/register", "/forgot-password", "/reset-password"];
+const AUTH_ONLY_ROUTES = ["/login", "/register", "/forgot-password", "/reset-password", "/verify-email"];
 const PROTECTED_PREFIX = "/dashboard";
 const PROTECTED_ROUTES = [
   "/dashboard",
@@ -58,5 +58,6 @@ export const config = {
     "/register",
     "/forgot-password",
     "/reset-password",
+    "/verify-email",
   ],
 };

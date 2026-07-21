@@ -12,6 +12,34 @@ const authRouter = Router();
 authRouter.post("/register", authController.registerUserController);
 
 /**
+ * @routes POST /api/auth/verify-email
+ * @desc Verify a registration code and log the user in
+ * @access Public
+ */
+authRouter.post("/verify-email", authController.verifyEmailController);
+
+/**
+ * @routes POST /api/auth/resend-verification
+ * @desc Resend the email verification code
+ * @access Public
+ */
+authRouter.post("/resend-verification", authController.resendVerificationController);
+
+/**
+ * @routes POST /api/auth/forgot-password
+ * @desc Email a password reset code
+ * @access Public
+ */
+authRouter.post("/forgot-password", authController.forgotPasswordController);
+
+/**
+ * @routes POST /api/auth/reset-password
+ * @desc Reset a password using an emailed code
+ * @access Public
+ */
+authRouter.post("/reset-password", authController.resetPasswordController);
+
+/**
  * @routes POST /api/auth/login
  * @desc login User with email and password
  * @access Public

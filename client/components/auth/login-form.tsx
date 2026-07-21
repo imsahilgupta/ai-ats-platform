@@ -61,6 +61,11 @@ export function LoginForm() {
     },
     onError: (error) => {
       if (error instanceof ApiError) {
+        if (error.body.requiresVerification && error.body.email) {
+          toast.error(error.body.message);
+          router.push(`/verify-email?email=${encodeURIComponent(error.body.email)}`);
+          return;
+        }
         toast.error(error.body.message);
       } else {
         toast.error("Unable to sign in. Please try again.");

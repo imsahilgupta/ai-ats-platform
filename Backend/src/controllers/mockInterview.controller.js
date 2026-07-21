@@ -1,8 +1,10 @@
 const mockInterviewSessionModel = require("../models/mockInterviewSession.model");
 const subscriptionModel = require("../models/subscription.model");
 const userProgressModel = require("../models/userProgress.model");
+const userModel = require("../models/user.model");
 const geminiService = require("../services/gemini.services");
 const { getUsageWindowState } = require("../utils/usageLimits");
+const { sendMockInterviewCompletedEmail } = require("../services/mail.services");
 
 /**
  * Award XP to user and handle leveling up
@@ -253,6 +255,15 @@ async function submitAnswerController(req, res) {
 
       // Award 200 XP for completing the full session
       await awardUserXP(req.user.id, 200);
+
+      // Best-effort email — never block the response on mail delivery
+      const user = await userModel.findById(req.user.id);
+      if (user) {
+        sendMockInterviewCompletedEmail(user.email, {
+          role: session.role,
+          overallScore: session.overallScore,
+        }).catch((err) => console.error("Failed to send mock interview completion email:", err));
+      }
 
       return res.status(200).json({
         message: "Interview completed.",

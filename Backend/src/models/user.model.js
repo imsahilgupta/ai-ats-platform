@@ -21,6 +21,26 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    emailVerificationCodeHash: {
+        type: String,
+        default: null,
+    },
+    emailVerificationExpires: {
+        type: Date,
+        default: null,
+    },
+    passwordResetCodeHash: {
+        type: String,
+        default: null,
+    },
+    passwordResetExpires: {
+        type: Date,
+        default: null,
+    },
 });
 
 const userModel = mongoose.model("user", userSchema);

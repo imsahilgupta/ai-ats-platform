@@ -1,6 +1,8 @@
 const pdfParse = require("pdf-parse")
 const { generateInterviewReport, generateResumePdf } = require("../services/ai.services")
 const interviewReportModel = require("../models/interviewReport.model")
+const userModel = require("../models/user.model")
+const { sendCareerReportGeneratedEmail } = require("../services/mail.services")
 
 
 
@@ -39,6 +41,13 @@ async function generateInterviewReportController(req, res) {
         })
 
         console.log("Database entry created with ID:", interviewReport._id);
+
+        const user = await userModel.findById(req.user.id)
+        if (user) {
+            sendCareerReportGeneratedEmail(user.email, { matchScore: interviewReport.matchScore })
+                .catch((err) => console.error("Failed to send career report email:", err))
+        }
+
         res.status(201).json({
             message: "Interview report generated successfully.",
             interviewReport

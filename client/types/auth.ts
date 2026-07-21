@@ -20,3 +20,19 @@ export interface AuthResponse {
   message: string;
   user: User;
 }
+
+export interface RegisterResponse {
+  message: string;
+  email: string;
+}
+
+export interface VerifyEmailPayload {
+  email: string;
+  code: string;
+}
+
+export interface ResetPasswordPayload {
+  email: string;
+  code: string;
+  newPassword: string;
+}

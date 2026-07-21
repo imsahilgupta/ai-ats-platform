@@ -38,11 +38,19 @@ async function seed() {
 
   const existing = await userModel.findOne({ email: ADMIN_CREDENTIALS.email });
   if (existing) {
+    let changed = false;
     if (!existing.isAdmin) {
-      // Upgrade existing account to admin
       existing.isAdmin = true;
+      changed = true;
+    }
+    if (!existing.isVerified) {
+      // Seeded accounts bypass the emailed verification code entirely.
+      existing.isVerified = true;
+      changed = true;
+    }
+    if (changed) {
       await existing.save();
-      console.log(`✅  Existing user '${existing.email}' upgraded to admin.`);
+      console.log(`✅  Existing user '${existing.email}' upgraded to a verified admin.`);
     } else {
       console.log(`ℹ️   Admin user '${existing.email}' already exists. Nothing to do.`);
     }
@@ -56,6 +64,7 @@ async function seed() {
     email: ADMIN_CREDENTIALS.email,
     password: hash,
     isAdmin: true,
+    isVerified: true,
   });
 
   console.log("✅  Admin user created successfully!");

@@ -3,6 +3,8 @@ export interface ApiErrorBody {
   limit?: number;
   resetAt?: string;
   errors?: string[];
+  requiresVerification?: boolean;
+  email?: string;
 }
 
 export class ApiError extends Error {
