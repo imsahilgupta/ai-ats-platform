@@ -14,7 +14,10 @@ const {
 const getCookieOptions = () => ({
   httpOnly: true,
   secure: false,
-  sameSite: "strict",
+  // "strict" drops the cookie on cross-site top-level redirects — which is
+  // exactly how the user returns from the eSewa/OAuth callback flows, so the
+  // session would appear logged-out on the very request that needs it.
+  sameSite: "lax",
   maxAge: 24 * 60 * 60 * 1000, // 24 hours
 });
 
@@ -174,7 +177,7 @@ async function logoutUserController(req, res) {
     res.clearCookie("token", {
       httpOnly: true,
       secure: false,
-      sameSite: "strict",
+      sameSite: "lax",
     });
 
     res.status(200).json({
@@ -291,12 +294,199 @@ async function deleteAccountController(req, res) {
     res.clearCookie("token", {
       httpOnly: true,
       secure: false,
-      sameSite: "strict",
+      sameSite: "lax",
     });
     res.status(200).json({ message: "Account deleted successfully" });
   } catch (err) {
     console.error("Delete account error:", err);
     res.status(500).json({ message: "An error occurred while deleting account" });
+  }
+}
+
+async function googleRedirectController(req, res) {
+  try {
+    const clientId = process.env.GOOGLE_CLIENT_ID || "GOOGLE_ID_PLACEHOLDER";
+    const redirectUri = encodeURIComponent(
+      process.env.GOOGLE_CALLBACK_URL || "http://localhost:5000/api/auth/google/callback"
+    );
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=profile%20email`;
+    res.redirect(authUrl);
+  } catch (err) {
+    console.error("Google redirect error:", err);
+    res.status(500).json({ message: "Google redirect failed" });
+  }
+}
+
+async function googleCallbackController(req, res) {
+  try {
+    const { code } = req.query;
+    if (!code) {
+      return res.redirect((process.env.FRONTEND_URL || "http://localhost:3000") + "/login?error=no_code");
+    }
+
+    const clientId = process.env.GOOGLE_CLIENT_ID || "GOOGLE_ID_PLACEHOLDER";
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET || "GOOGLE_SECRET_PLACEHOLDER";
+    const redirectUri = process.env.GOOGLE_CALLBACK_URL || "http://localhost:5000/api/auth/google/callback";
+
+    const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        code,
+        client_id: clientId,
+        client_secret: clientSecret,
+        redirect_uri: redirectUri,
+        grant_type: "authorization_code",
+      }),
+    });
+
+    const tokenData = await tokenRes.json();
+    if (!tokenData.access_token) {
+      console.error("Google Token Exchange failed:", tokenData);
+      return res.redirect((process.env.FRONTEND_URL || "http://localhost:3000") + "/login?error=token_exchange_failed");
+    }
+
+    const userRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+    });
+    const userData = await userRes.json();
+
+    if (!userData.email) {
+      return res.redirect((process.env.FRONTEND_URL || "http://localhost:3000") + "/login?error=no_email");
+    }
+
+    let user = await userModel.findOne({ email: userData.email });
+    if (!user) {
+      const crypto = require("crypto");
+      const randomPassword = crypto.randomBytes(16).toString("hex");
+      const hash = await bcrypt.hash(randomPassword, 10);
+      let baseUsername = userData.name ? userData.name.replace(/\s+/g, "").toLowerCase() : userData.email.split("@")[0];
+      baseUsername = baseUsername.replace(/[^a-zA-Z0-9_-]/g, "");
+      if (baseUsername.length < 3) baseUsername = "user_" + crypto.randomBytes(4).toString("hex");
+      let finalUsername = baseUsername;
+      let counter = 1;
+      while (await userModel.findOne({ username: finalUsername })) {
+        finalUsername = `${baseUsername}_${counter}`;
+        counter++;
+      }
+
+      user = await userModel.create({
+        username: finalUsername,
+        email: userData.email,
+        password: hash,
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, username: user.username, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.cookie("token", token, getCookieOptions());
+    res.redirect(process.env.FRONTEND_URL || "http://localhost:3000/");
+  } catch (err) {
+    console.error("Google OAuth error:", err);
+    res.redirect((process.env.FRONTEND_URL || "http://localhost:3000") + "/login?error=server_error");
+  }
+}
+
+async function githubRedirectController(req, res) {
+  try {
+    const clientId = process.env.GITHUB_CLIENT_ID || "GITHUB_ID_PLACEHOLDER";
+    const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=user:email`;
+    res.redirect(authUrl);
+  } catch (err) {
+    console.error("GitHub redirect error:", err);
+    res.status(500).json({ message: "GitHub redirect failed" });
+  }
+}
+
+async function githubCallbackController(req, res) {
+  try {
+    const { code } = req.query;
+    if (!code) {
+      return res.redirect((process.env.FRONTEND_URL || "http://localhost:3000") + "/login?error=no_code");
+    }
+
+    const clientId = process.env.GITHUB_CLIENT_ID || "GITHUB_ID_PLACEHOLDER";
+    const clientSecret = process.env.GITHUB_CLIENT_SECRET || "GITHUB_SECRET_PLACEHOLDER";
+
+    const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        client_id: clientId,
+        client_secret: clientSecret,
+        code,
+      }),
+    });
+
+    const tokenData = await tokenRes.json();
+    if (!tokenData.access_token) {
+      console.error("GitHub Token Exchange failed:", tokenData);
+      return res.redirect((process.env.FRONTEND_URL || "http://localhost:3000") + "/login?error=token_exchange_failed");
+    }
+
+    const userRes = await fetch("https://api.github.com/user", {
+      headers: {
+        Authorization: `token ${tokenData.access_token}`,
+        "User-Agent": "MockMate-App",
+      },
+    });
+    const userData = await userRes.json();
+
+    const emailsRes = await fetch("https://api.github.com/user/emails", {
+      headers: {
+        Authorization: `token ${tokenData.access_token}`,
+        "User-Agent": "MockMate-App",
+      },
+    });
+    const emailsData = await emailsRes.json();
+    const primaryEmail = Array.isArray(emailsData)
+      ? emailsData.find((e) => e.primary)?.email || emailsData[0]?.email
+      : userData.email;
+
+    if (!primaryEmail) {
+      return res.redirect((process.env.FRONTEND_URL || "http://localhost:3000") + "/login?error=no_email");
+    }
+
+    let user = await userModel.findOne({ email: primaryEmail });
+    if (!user) {
+      const crypto = require("crypto");
+      const randomPassword = crypto.randomBytes(16).toString("hex");
+      const hash = await bcrypt.hash(randomPassword, 10);
+      let baseUsername = userData.login ? userData.login.replace(/\s+/g, "").toLowerCase() : primaryEmail.split("@")[0];
+      baseUsername = baseUsername.replace(/[^a-zA-Z0-9_-]/g, "");
+      if (baseUsername.length < 3) baseUsername = "user_" + crypto.randomBytes(4).toString("hex");
+      let finalUsername = baseUsername;
+      let counter = 1;
+      while (await userModel.findOne({ username: finalUsername })) {
+        finalUsername = `${baseUsername}_${counter}`;
+        counter++;
+      }
+
+      user = await userModel.create({
+        username: finalUsername,
+        email: primaryEmail,
+        password: hash,
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, username: user.username, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.cookie("token", token, getCookieOptions());
+    res.redirect(process.env.FRONTEND_URL || "http://localhost:3000/");
+  } catch (err) {
+    console.error("GitHub OAuth error:", err);
+    res.redirect((process.env.FRONTEND_URL || "http://localhost:3000") + "/login?error=server_error");
   }
 }
 
@@ -307,4 +497,9 @@ module.exports = {
   getMeController,
   updateUsernameController,
   deleteAccountController,
+  googleRedirectController,
+  googleCallbackController,
+  githubRedirectController,
+  githubCallbackController,
 };
+

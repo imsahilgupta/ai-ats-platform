@@ -38,6 +38,8 @@ const mockInterviewRouter = require("./routes/mockInterview.routes");
 const resumeAnalysisRouter = require("./routes/resumeAnalysis.routes");
 const analyticsRouter = require("./routes/analytics.routes");
 const subscriptionRouter = require("./routes/subscription.routes");
+const paymentRouter = require("./routes/payment.routes");
+const adminRouter = require("./routes/admin.routes");
 
 /* using all routes here */
 app.use("/api/auth", authRouter);
@@ -46,6 +48,8 @@ app.use("/api/mock-interview", mockInterviewRouter);
 app.use("/api/resume", resumeAnalysisRouter);
 app.use("/api/analytics", analyticsRouter);
 app.use("/api/subscription", subscriptionRouter);
+app.use("/api/payment", paymentRouter);
+app.use("/api/admin", adminRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -8,7 +8,7 @@ function getUsageWindowState(subscription, now = new Date()) {
 
   const shouldReset = !resetAt || resetAt <= now;
   if (shouldReset) {
-    resetAt = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+    resetAt = getNextResetDate(now);
     count = 0;
   }
 

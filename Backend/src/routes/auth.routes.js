@@ -46,4 +46,32 @@ authRouter.patch("/update-username", authUser, authController.updateUsernameCont
  */
 authRouter.delete("/delete-account", authUser, authController.deleteAccountController);
 
+/**
+ * @routes GET /api/auth/google
+ * @desc Redirect to Google consent screen
+ * @access Public
+ */
+authRouter.get("/google", authController.googleRedirectController);
+
+/**
+ * @routes GET /api/auth/google/callback
+ * @desc Handle Google OAuth callback
+ * @access Public
+ */
+authRouter.get("/google/callback", authController.googleCallbackController);
+
+/**
+ * @routes GET /api/auth/github
+ * @desc Redirect to GitHub consent screen
+ * @access Public
+ */
+authRouter.get("/github", authController.githubRedirectController);
+
+/**
+ * @routes GET /api/auth/github/callback
+ * @desc Handle GitHub OAuth callback
+ * @access Public
+ */
+authRouter.get("/github/callback", authController.githubCallbackController);
+
 module.exports = authRouter;

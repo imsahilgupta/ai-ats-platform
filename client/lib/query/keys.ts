@@ -1,0 +1,18 @@
+export const qk = {
+  me: () => ["me"] as const,
+  subscription: () => ["subscription"] as const,
+  analytics: () => ["analytics"] as const,
+  adminStats: () => ["admin-stats"] as const,
+  adminUsers: () => ["admin-users"] as const,
+  adminSubscriptions: () => ["admin-subscriptions"] as const,
+  adminReports: () => ["admin-reports"] as const,
+  adminGrowth: () => ["admin-growth"] as const,
+  adminDatabase: () => ["admin-database"] as const,
+  adminSystem: () => ["admin-system"] as const,
+  interviewReports: () => ["interview-reports"] as const,
+  interviewReport: (id: string) => ["interview-report", id] as const,
+  resumeHistory: () => ["resume-history"] as const,
+  mockInterviewSession: (id: string) => ["mock-interview-session", id] as const,
+  notifications: () => ["notifications"] as const,
+  profileDetails: () => ["profile-details"] as const,
+};
