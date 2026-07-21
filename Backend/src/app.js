@@ -40,6 +40,7 @@ const analyticsRouter = require("./routes/analytics.routes");
 const subscriptionRouter = require("./routes/subscription.routes");
 const paymentRouter = require("./routes/payment.routes");
 const adminRouter = require("./routes/admin.routes");
+const blogRouter = require("./routes/blog.routes");
 
 /* using all routes here */
 app.use("/api/auth", authRouter);
@@ -50,6 +51,7 @@ app.use("/api/analytics", analyticsRouter);
 app.use("/api/subscription", subscriptionRouter);
 app.use("/api/payment", paymentRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/blog", blogRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

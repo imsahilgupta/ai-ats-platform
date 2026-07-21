@@ -41,3 +41,10 @@ export interface AdminStatsResponse {
   activeSubscribers: number;
   monthlyRecurringRevenue: number;
 }
+
+export interface PublicStatsResponse {
+  totalUsers: number;
+  completedMockInterviews: number;
+  totalResumes: number;
+  careerReports: number;
+}

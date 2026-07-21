@@ -15,4 +15,6 @@ export const qk = {
   mockInterviewSession: (id: string) => ["mock-interview-session", id] as const,
   notifications: () => ["notifications"] as const,
   profileDetails: () => ["profile-details"] as const,
+  blogPosts: () => ["blog-posts"] as const,
+  adminBlogPosts: () => ["admin-blog-posts"] as const,
 };

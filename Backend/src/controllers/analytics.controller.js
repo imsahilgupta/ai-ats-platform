@@ -125,7 +125,42 @@ async function getAdminStatsController(req, res) {
   }
 }
 
+/**
+ * Public: platform-wide counts safe to show on the marketing site.
+ * No auth required — only aggregate counts, no per-user data.
+ */
+async function getPublicStatsController(req, res) {
+  try {
+    const userModel = require("../models/user.model");
+    const interviewReportModel = require("../models/interviewReport.model");
+
+    const [totalUsers, completedMockInterviews, totalResumes, careerReports] =
+      await Promise.all([
+        userModel.countDocuments(),
+        mockInterviewSessionModel.countDocuments({ status: "completed" }),
+        resumeReportModel.countDocuments(),
+        interviewReportModel.countDocuments(),
+      ]);
+
+    res.status(200).json({
+      totalUsers,
+      completedMockInterviews,
+      totalResumes,
+      careerReports,
+    });
+  } catch (error) {
+    console.error("Public stats error:", error);
+    res
+      .status(500)
+      .json({
+        message: "Failed to compile public stats.",
+        error: error.message,
+      });
+  }
+}
+
 module.exports = {
   getAnalyticsController,
   getAdminStatsController,
+  getPublicStatsController,
 };

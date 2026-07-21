@@ -1,11 +1,8 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import type { BlogPostSummary } from "@/types/blog";
 
-export function BlogCard({
-  post,
-}: {
-  post: { slug: string; title: string; excerpt: string; category: string; date: string; readTime: string };
-}) {
+export function BlogCard({ post }: { post: BlogPostSummary }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
@@ -18,7 +15,7 @@ export function BlogCard({
       <p className="mt-2 flex-1 text-sm text-muted-foreground">{post.excerpt}</p>
       <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
         <span>
-          {new Date(post.date).toLocaleDateString()} &middot; {post.readTime}
+          {new Date(post.publishedAt).toLocaleDateString()} &middot; {post.readTime}
         </span>
         <span className="flex items-center gap-1 font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
           Read <ArrowRight className="size-3" />

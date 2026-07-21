@@ -5,11 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { MarkdownReport } from "@/components/shared/markdown-report";
 import { RoleAvatar } from "@/components/shared/role-avatar";
 import { NewsletterSignup } from "@/components/marketing/newsletter-signup";
-import { BLOG_POSTS } from "@/lib/data/marketing";
-
-export function generateStaticParams() {
-  return BLOG_POSTS.map((post) => ({ slug: post.slug }));
-}
+import { getBlogPostBySlugServer } from "@/lib/api/blog";
 
 export async function generateMetadata({
   params,
@@ -17,13 +13,13 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = BLOG_POSTS.find((p) => p.slug === slug);
+  const post = await getBlogPostBySlugServer(slug);
   return { title: post ? `${post.title} — MockMate.AI Blog` : "Blog — MockMate.AI" };
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = BLOG_POSTS.find((p) => p.slug === slug);
+  const post = await getBlogPostBySlugServer(slug);
 
   if (!post) notFound();
 
@@ -40,11 +36,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <h1 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">{post.title}</h1>
 
       <div className="mt-4 flex items-center gap-3">
-        <RoleAvatar name="MockMate Team" />
+        <RoleAvatar name={post.author} />
         <div className="text-sm">
-          <p className="font-medium text-foreground">MockMate Team</p>
+          <p className="font-medium text-foreground">{post.author}</p>
           <p className="text-muted-foreground">
-            {new Date(post.date).toLocaleDateString()} &middot; {post.readTime}
+            {new Date(post.publishedAt).toLocaleDateString()} &middot; {post.readTime}
           </p>
         </div>
       </div>

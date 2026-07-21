@@ -6,15 +6,20 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BlogCard } from "@/components/marketing/blog-card";
 import { EmptyState } from "@/components/shared/empty-state";
-import { BLOG_CATEGORIES, BLOG_POSTS } from "@/lib/data/marketing";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useBlogPostsQuery } from "@/hooks/use-blog";
 import { cn } from "@/lib/utils";
 
 export function BlogIndexContent() {
+  const { data, isLoading } = useBlogPostsQuery();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string | null>(null);
 
+  const posts = useMemo(() => data?.posts ?? [], [data]);
+  const categories = useMemo(() => Array.from(new Set(posts.map((p) => p.category))), [posts]);
+
   const filtered = useMemo(() => {
-    return BLOG_POSTS.filter((post) => {
+    return posts.filter((post) => {
       const matchesCategory = !category || post.category === category;
       const matchesQuery =
         !query.trim() ||
@@ -22,7 +27,17 @@ export function BlogIndexContent() {
         post.excerpt.toLowerCase().includes(query.toLowerCase());
       return matchesCategory && matchesQuery;
     });
-  }, [query, category]);
+  }, [posts, query, category]);
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-5 sm:grid-cols-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-44 rounded-xl" />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -44,7 +59,7 @@ export function BlogIndexContent() {
           >
             All
           </Button>
-          {BLOG_CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <Button
               key={c}
               size="sm"

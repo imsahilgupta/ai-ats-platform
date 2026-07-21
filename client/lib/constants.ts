@@ -21,6 +21,7 @@ import {
   ScrollText,
   Database,
   Activity,
+  FileText,
   type LucideIcon,
 } from "lucide-react";
 
@@ -87,6 +88,7 @@ export const ADMIN_NAV: DashboardNavItem[] = [
   { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { title: "Users", href: "/admin/users", icon: Users },
   { title: "Reports", href: "/admin/reports", icon: FileBarChart },
+  { title: "Blog", href: "/admin/blog", icon: FileText },
   { title: "Payments", href: "/admin/payments", icon: Wallet },
   { title: "Subscriptions", href: "/admin/subscriptions", icon: CreditCard },
   { title: "Analytics", href: "/admin/analytics", icon: BarChart3 },
