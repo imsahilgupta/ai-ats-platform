@@ -71,7 +71,9 @@ export function Footer() {
               <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                 <Sparkles className="size-4" />
               </span>
-              MockMate<span className="text-primary">.AI</span>
+              <span>
+                MockMate<span className="text-primary">.AI</span>
+              </span>
             </Link>
             <p className="mt-3 max-w-xs text-sm text-muted-foreground">
               AI-powered interview prep, resume analysis, and career strategy — all in one platform.

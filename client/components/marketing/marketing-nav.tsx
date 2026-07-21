@@ -41,7 +41,9 @@ export function MarketingNav() {
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Sparkles className="size-4" />
           </span>
-          MockMate<span className="text-primary">.AI</span>
+          <span>
+            MockMate<span className="text-primary">.AI</span>
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
